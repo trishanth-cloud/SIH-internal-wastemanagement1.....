@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - EcoTrack</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex">
+    <aside class="w-64 bg-slate-900 text-white p-6 flex flex-col justify-between hidden md:flex">
+        <div>
+            <h2 class="text-xl font-bold text-emerald-400 tracking-tight mb-8">♻️ EcoTrack Portal</h2>
+            <nav class="space-y-2">
+                <a href="#" class="block px-4 py-2 bg-slate-800 text-emerald-400 rounded-lg font-medium">📊 Dashboard</a>
+                <a href="admin.html" class="block px-4 py-2 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition">🔑 Admin View</a>
+            </nav>
+        </div>
+        <a href="index.html" class="text-left text-sm text-slate-400 hover:text-rose-400 transition">🚪 Log Out</a>
+    </aside>
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Welcome Back, Innovator!</h1>
+                <p class="text-slate-500 text-sm">Track and manage your electronic waste contributions.</p>
+            </div>
+            <button onclick="document.getElementById('reportModal').classList.remove('hidden')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition shadow-sm">+ Recycle Item</button>
+        </header>
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Total Waste Logged</p>
+                <p class="text-3xl font-bold text-slate-800 mt-2" id="statTotalItems">3 items</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Diverted from Landfills</p>
+                <p class="text-3xl font-bold text-emerald-600 mt-2" id="statTotalWeight">3.7 kg</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Eco-Points Earned</p>
+                <p class="text-3xl font-bold text-amber-500 mt-2" id="statPoints">37 pts</p>
+            </div>
+        </section>
+        <section class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+            <h3 class="font-bold text-slate-800 mb-4 text-lg">Your Submissions</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-slate-400 text-sm">
+                            <th class="py-3 px-4">Item Details</th>
+                            <th class="py-3 px-4">Weight (kg)</th>
+                            <th class="py-3 px-4">Status</th>
+                            <th class="py-3 px-4">Date Logged</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsTableBody" class="text-slate-600 text-sm divide-y divide-slate-50">
+                        <tr class="border-b border-slate-50">
+                            <td class="py-3 px-4 font-medium text-slate-800">Laptop / Desktop</td>
+                            <td class="py-3 px-4">2.4 kg</td>
+                            <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">PENDING</span></td>
+                            <td class="py-3 px-4 text-slate-400">Just now</td>
+                        </tr>
+                        <tr class="border-b border-slate-50">
+                            <td class="py-3 px-4 font-medium text-slate-800">Smartphone / Tablet</td>
+                            <td class="py-3 px-4">0.2 kg</td>
+                            <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">COLLECTED</span></td>
+                            <td class="py-3 px-4 text-slate-400">2 hours ago</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-medium text-slate-800">Lithium-ion Batteries</td>
+                            <td class="py-3 px-4">1.1 kg</td>
+                            <td class="py-3 px-4"><span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">RECYCLED</span></td>
+                            <td class="py-3 px-4 text-slate-400">Yesterday</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <div id="reportModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-xl max-w-md w-full shadow-lg">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">Log New E-Waste Item</h3>
+            <form id="addItemForm" class="space-y-4" onsubmit="event.preventDefault(); document.getElementById('reportModal').classList.add('hidden');">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Item Type</label>
+                    <select class="w-full border border-slate-200 p-2 rounded-lg text-sm">
+                        <option value="Smartphone">Smartphone / Tablet</option>
+                        <option value="Laptop">Laptop / Desktop</option>
+                        <option value="Battery">Lithium-ion Batteries</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Weight (kg)</label>
+                    <input type="number" step="0.1" required class="w-full border border-slate-200 p-2 rounded-lg text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Pickup Address</label>
+                    <textarea required rows="2" class="w-full border border-slate-200 p-2 rounded-lg text-sm"></textarea>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="document.getElementById('reportModal').classList.add('hidden')" class="px-4 py-2 text-sm text-slate-500 hover:bg-slate-100 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

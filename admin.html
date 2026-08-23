@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jury Admin Panel - EcoTrack</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+    <nav class="bg-slate-900 text-white p-4 flex justify-between items-center shadow-md">
+        <span class="font-bold text-emerald-400">♻️ EcoTrack Jury Demonstration Panel</span>
+        <a href="dashboard.html" class="text-sm bg-slate-800 px-3 py-1 rounded text-slate-300 hover:text-white">← Return to User View</a>
+    </nav>
+    <main class="p-8 max-w-6xl mx-auto">
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-amber-800 text-sm">
+            💡 <strong>Jury Demo Tip:</strong> Show how the administrator handles live ticket pipelines across campus zones.
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+            <h2 class="text-xl font-bold text-slate-800 mb-6">Central Inbound Pipeline</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-slate-400 text-sm">
+                            <th class="py-3 px-4">User ID</th>
+                            <th class="py-3 px-4">Category</th>
+                            <th class="py-3 px-4">Weight</th>
+                            <th class="py-3 px-4">Current Status</th>
+                            <th class="py-3 px-4 text-right">Pipeline Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-600 text-sm divide-y divide-slate-50">
+                        <tr class="border-b border-slate-50">
+                            <td class="py-3 px-4 font-mono text-xs text-slate-400">USR-2091</td>
+                            <td class="py-3 px-4 font-medium text-slate-800">Laptop / Desktop</td>
+                            <td class="py-3 px-4">2.4 kg</td>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 text-xs rounded font-medium bg-amber-100 text-amber-800">pending</span></td>
+                            <td class="py-3 px-4 text-right"><button class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded font-medium transition">Advance Status ➡️</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
