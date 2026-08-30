@@ -15,11 +15,16 @@
     <nav class="border-b border-slate-800 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
             <span class="text-emerald-400 text-xl"><i class="fa-solid fa-shield-halved"></i></span>
-            <span class="font-bold tracking-wider bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">♻️ EcoTrack Jury Demonstration Panel</span>
+            <span class="font-bold tracking-wider bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">♻️ EcoTrack Admin Panel</span>
         </div>
-        <a href="dashboard.html" class="text-xs text-slate-400 hover:text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg bg-slate-800/40 transition-all">
-            <i class="fa-solid fa-arrow-left mr-1.5"></i>Return User View
-        </a>
+        <div class="flex items-center space-x-3">
+            <a href="dashboard.html" class="text-xs text-slate-400 hover:text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg bg-slate-800/40 transition-all">
+                <i class="fa-solid fa-arrow-left mr-1.5"></i>User View
+            </a>
+            <button id="adminLogoutBtn" class="text-xs text-rose-400 hover:text-rose-300 border border-rose-700/30 px-3 py-1.5 rounded-lg bg-rose-800/20 transition-all">
+                <i class="fa-solid fa-right-from-bracket mr-1.5"></i>Logout
+            </button>
+        </div>
     </nav>
 
     <!-- Main Workspace Area -->
@@ -62,7 +67,8 @@
 
     <!-- Real-Time Administrative Pipeline Verification Sync Script -->
     <script type="module">
-        import { db, collection, onSnapshot, doc, updateDoc } from "./js/firebase-config.js";
+        import { auth, db, collection, onSnapshot, doc, updateDoc } from "./js/firebase-config.js";
+        import { signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
         const wasteCollectionRef = collection(db, "waste_requests");
 
@@ -129,6 +135,16 @@
                 });
             });
         }
+
+        // Admin Logout Handler
+        document.getElementById('adminLogoutBtn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = "index.html";
+            } catch (err) {
+                alert("Logout failed: " + err.message);
+            }
+        });
 
         window.onload = listenToAdminCloud;
     </script>

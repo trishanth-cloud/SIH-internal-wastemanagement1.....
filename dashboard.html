@@ -107,10 +107,8 @@
 
     <!-- Real-Time Firebase Cloud Operations Script -->
     <script type="module">
-        import { db, collection, addDoc, onSnapshot } from "./js/firebase-config.js";
-        import { getAuth, signOut } from "https://gstatic.com";
-
-        const auth = getAuth();
+        import { auth, db, collection, addDoc, onSnapshot } from "./js/firebase-config.js";
+        import { signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
         const wasteCollectionRef = collection(db, "waste_requests");
 
         // Cloud listener: Watches database items and calculates totals automatically

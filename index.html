@@ -15,119 +15,183 @@
     <div class="absolute w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] top-[-10%] left-[-10%] animate-pulse"></div>
     <div class="absolute w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] bottom-[-10%] right-[-10%]"></div>
 
-    <!-- Central Authentication Frame Container -->
-    <div class="w-full max-w-md mx-4 bg-[#1e293b]/60 backdrop-blur-md border border-slate-700/50 p-8 rounded-2xl shadow-2xl relative z-10">
+    <!-- Dual Authentication Panel Container -->
+    <div class="w-full max-w-4xl mx-4 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6">
         
-        
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-xl mb-4 text-emerald-400 text-2xl shadow-inner shadow-emerald-500/5">
-                <i class="fa-solid fa-leaf"></i>
+        <!-- USER LOGIN PANEL -->
+        <div class="bg-[#1e293b]/60 backdrop-blur-md border border-slate-700/50 p-8 rounded-2xl shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-xl mb-4 text-emerald-400 text-2xl shadow-inner shadow-emerald-500/5">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">EcoTrace User</h1>
+                <p class="text-sm text-slate-400 mt-1">Recycle & Track Items</p>
             </div>
-            <h1 id="portalTitle" class="text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">EcoTrace Login</h1>
-            <p id="portalSub" class="text-sm text-slate-400 mt-1">Authorized User Hub</p>
+
+            <!-- User Login Form -->
+            <form id="userAuthForm" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Email Address</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                            <i class="fa-regular fa-envelope"></i>
+                        </span>
+                        <input id="userEmail" type="email" required placeholder="your@email.com" 
+                            class="w-full bg-[#0f172a]/80 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-200">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input id="userPassword" type="password" required placeholder="••••••••" 
+                            class="w-full bg-[#0f172a]/80 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-200">
+                    </div>
+                </div>
+
+                <button type="submit" id="userSubmitBtn"
+                    class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-900 font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/10 active:scale-[0.98] transition-all duration-150">
+                    <span>Login as User</span>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-xs">
+                <button id="userToggleBtn" class="text-emerald-400 hover:text-emerald-300 underline font-medium focus:outline-none">
+                    New here? Create Account
+                </button>
+            </div>
         </div>
 
-        <!-- Form Dispatch Pipeline -->
-        <form id="authForm" class="space-y-5">
-            <!-- Username/Email Field Block -->
-            <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Institutional Email ID</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                        <i class="fa-regular fa-envelope"></i>
-                    </span>
-                    <input id="email" type="email" required placeholder="name@college.edu (or admin@...)" 
-                        class="w-full bg-[#0f172a]/80 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-200">
+        <!-- ADMIN LOGIN PANEL -->
+        <div class="bg-[#1e293b]/60 backdrop-blur-md border border-slate-700/50 p-8 rounded-2xl shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded-xl mb-4 text-amber-400 text-2xl shadow-inner shadow-amber-500/5">
+                    <i class="fa-solid fa-shield-halved"></i>
                 </div>
+                <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">Admin Portal</h1>
+                <p class="text-sm text-slate-400 mt-1">Manage & Process Items</p>
             </div>
 
-            <!-- Password Entry Field Block -->
-            <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Secure Access Key</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
-                        <i class="fa-solid fa-lock"></i>
-                    </span>
-                    <input id="password" type="password" required placeholder="••••••••" 
-                        class="w-full bg-[#0f172a]/80 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-200">
+            <!-- Admin Login Form -->
+            <form id="adminAuthForm" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Admin Email</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                            <i class="fa-regular fa-envelope"></i>
+                        </span>
+                        <input id="adminEmail" type="email" required placeholder="admin@college.edu" 
+                            class="w-full bg-[#0f172a]/80 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all duration-200">
+                    </div>
                 </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Admin Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input id="adminPassword" type="password" required placeholder="••••••••" 
+                            class="w-full bg-[#0f172a]/80 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all duration-200">
+                    </div>
+                </div>
+
+                <button type="submit" id="adminSubmitBtn"
+                    class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-900 font-bold py-3 rounded-xl shadow-lg shadow-amber-500/10 active:scale-[0.98] transition-all duration-150">
+                    <span>Admin Login</span>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-xs">
+                <button id="adminToggleBtn" class="text-amber-400 hover:text-amber-300 underline font-medium focus:outline-none">
+                    New admin? Register
+                </button>
             </div>
-
-            <!-- Trigger Execution Control -->
-            <button type="submit" id="submitBtn"
-                class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-900 font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/10 active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2">
-                <span>Enter Portal</span>
-                <i class="fa-solid fa-arrow-right text-xs"></i>
-            </button>
-        </form>
-
-        <!-- Functional Mode Toggle Switch Link -->
-        <div class="mt-6 text-center text-xs">
-            <button id="toggleViewBtn" class="text-emerald-400 hover:text-emerald-300 underline font-medium focus:outline-none">
-                Need an account? Register here
-            </button>
         </div>
     </div>
 
-    <!-- Live Authentication Architecture Script Bridge -->
+    <!-- Dual Authentication Script Bridge -->
     <script type="module">
         import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "./js/firebase-config.js";
 
-        let isLoginMode = true;
+        // USER AUTHENTICATION HANDLER
+        let userIsLoginMode = true;
+        const userAuthForm = document.getElementById('userAuthForm');
+        const userToggleBtn = document.getElementById('userToggleBtn');
+        const userSubmitBtn = document.getElementById('userSubmitBtn');
 
-        const portalTitle = document.getElementById('portalTitle');
-        const portalSub = document.getElementById('portalSub');
-        const submitBtn = document.getElementById('submitBtn');
-        const toggleViewBtn = document.getElementById('toggleViewBtn');
-        const authForm = document.getElementById('authForm');
-
-        // Dynamic visual mode switcher logic
-        toggleViewBtn.addEventListener('click', () => {
-            isLoginMode = !isLoginMode;
-            if (isLoginMode) {
-                portalTitle.innerText = "EcoTrace Login";
-                portalSub.innerText = "Authorized User Hub";
-                submitBtn.innerHTML = "<span>Enter Portal</span> <i class='fa-solid fa-arrow-right text-xs'></i>";
-                toggleViewBtn.innerText = "Need an account? Register here";
+        userToggleBtn.addEventListener('click', () => {
+            userIsLoginMode = !userIsLoginMode;
+            if (userIsLoginMode) {
+                userSubmitBtn.innerHTML = '<span>Login as User</span>';
+                userToggleBtn.innerText = 'New here? Create Account';
             } else {
-                portalTitle.innerText = "Create Account";
-                portalSub.innerText = "Register New Identity Credentials";
-                submitBtn.innerHTML = "<span>Register Account</span> <i class='fa-solid fa-user-plus text-xs'></i>";
-                toggleViewBtn.innerText = "Already registered? Login here";
+                userSubmitBtn.innerHTML = '<span>Create User Account</span>';
+                userToggleBtn.innerText = 'Already have account? Login';
             }
         });
 
-        // Cloud execution routing database controller
-        authForm.addEventListener('submit', async (e) => {
+        userAuthForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const emailValue = document.getElementById('email').value.trim();
-            const passwordValue = document.getElementById('password').value;
+            const emailValue = document.getElementById('userEmail').value.trim();
+            const passwordValue = document.getElementById('userPassword').value;
 
             try {
-                if (isLoginMode) {
-                    // Firebase cloud sign in processing loop
+                if (userIsLoginMode) {
                     await signInWithEmailAndPassword(auth, emailValue, passwordValue);
-                    
-                    // Route users based on explicit text criteria evaluation
-                    if (emailValue.toLowerCase().startsWith('admin')) {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'dashboard.html';
-                    }
+                    window.location.href = 'dashboard.html';
                 } else {
-                    // Firebase cloud database registration processing loop
                     await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
-                    alert("Account successfully created in database! Logging you in...");
-                    
-                    if (emailValue.toLowerCase().startsWith('admin')) {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'dashboard.html';
-                    }
+                    alert("Account created! Logging you in...");
+                    window.location.href = 'dashboard.html';
                 }
             } catch (error) {
-                // Clear descriptive parsing fallback alerts for wrong data
-                alert("Authentication Failed: " + error.message.replace("Firebase: ", ""));
+                alert("User Auth Error: " + error.message.replace("Firebase: ", ""));
+            }
+        });
+
+        // ADMIN AUTHENTICATION HANDLER
+        let adminIsLoginMode = true;
+        const adminAuthForm = document.getElementById('adminAuthForm');
+        const adminToggleBtn = document.getElementById('adminToggleBtn');
+        const adminSubmitBtn = document.getElementById('adminSubmitBtn');
+
+        adminToggleBtn.addEventListener('click', () => {
+            adminIsLoginMode = !adminIsLoginMode;
+            if (adminIsLoginMode) {
+                adminSubmitBtn.innerHTML = '<span>Admin Login</span>';
+                adminToggleBtn.innerText = 'New admin? Register';
+            } else {
+                adminSubmitBtn.innerHTML = '<span>Register Admin Account</span>';
+                adminToggleBtn.innerText = 'Already admin? Login';
+            }
+        });
+
+        adminAuthForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailValue = document.getElementById('adminEmail').value.trim();
+            const passwordValue = document.getElementById('adminPassword').value;
+
+            // Verify admin email pattern
+            if (!emailValue.toLowerCase().includes('admin')) {
+                alert("Admin login requires 'admin' in email address");
+                return;
+            }
+
+            try {
+                if (adminIsLoginMode) {
+                    await signInWithEmailAndPassword(auth, emailValue, passwordValue);
+                    window.location.href = 'admin.html';
+                } else {
+                    await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
+                    alert("Admin account created! Logging you in...");
+                    window.location.href = 'admin.html';
+                }
+            } catch (error) {
+                alert("Admin Auth Error: " + error.message.replace("Firebase: ", ""));
             }
         });
     </script>
