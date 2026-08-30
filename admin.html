@@ -9,19 +9,19 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-<body class="bg-[#0f172a] text-slate-100 min-h-screen relative font-sans">
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800 min-h-screen relative font-sans">
 
     <!-- Admin Navigation Banner -->
-    <nav class="border-b border-slate-800 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+    <nav class="border-b border-slate-200 bg-white/70 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between shadow-sm">
         <div class="flex items-center space-x-3">
-            <span class="text-emerald-400 text-xl"><i class="fa-solid fa-shield-halved"></i></span>
-            <span class="font-bold tracking-wider bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">♻️ EcoTrack Admin Panel</span>
+            <span class="text-amber-600 text-xl"><i class="fa-solid fa-shield-halved"></i></span>
+            <span class="font-bold tracking-wider text-2xl bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">♻️ EcoTrack Admin Panel</span>
         </div>
         <div class="flex items-center space-x-3">
-            <a href="dashboard.html" class="text-xs text-slate-400 hover:text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg bg-slate-800/40 transition-all">
+            <a href="dashboard.html" class="text-sm text-slate-600 hover:text-slate-900 border border-slate-300 px-3 py-1.5 rounded-lg bg-white transition-all hover:bg-slate-50">
                 <i class="fa-solid fa-arrow-left mr-1.5"></i>User View
             </a>
-            <button id="adminLogoutBtn" class="text-xs text-rose-400 hover:text-rose-300 border border-rose-700/30 px-3 py-1.5 rounded-lg bg-rose-800/20 transition-all">
+            <button id="adminLogoutBtn" class="text-sm text-rose-600 hover:text-rose-700 border border-rose-200 px-3 py-1.5 rounded-lg bg-rose-50 transition-all hover:bg-rose-100">
                 <i class="fa-solid fa-right-from-bracket mr-1.5"></i>Logout
             </button>
         </div>
@@ -31,33 +31,33 @@
     <main class="max-w-6xl mx-auto p-6 relative z-10 space-y-6">
         
         <!-- Jury Tip Alert Box -->
-        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-amber-400 text-sm flex items-center space-x-3 shadow-lg">
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-700 text-sm flex items-center space-x-3 shadow-sm">
             <span class="text-lg"><i class="fa-regular fa-lightbulb"></i></span>
             <div>
-                <strong>Jury Demo Tip:</strong> Open your user dashboard on another screen. Click "Advance Status" here and watch the user table change in real-time.
+                <strong>Admin Tip:</strong> Real-time dashboard shows all incoming e-waste requests. Click "Advance Status" to mark items as collected.
             </div>
         </div>
 
         <!-- Administrative Table Management Grid -->
-        <div class="bg-[#1e293b]/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-md">
             <div class="mb-6">
-                <h2 class="text-lg font-bold text-emerald-400"><i class="fa-solid fa-truck-ramp-box mr-2"></i>Central Inbound Pipeline</h2>
-                <p class="text-xs text-slate-400 mt-1">Review live student submissions and execute pickup verification dispatches instantly.</p>
+                <h2 class="text-lg font-bold text-amber-700"><i class="fa-solid fa-truck-ramp-box mr-2"></i>E-Waste Processing Pipeline</h2>
+                <p class="text-sm text-slate-600 mt-1">Manage incoming submissions and track collection status.</p>
             </div>
             
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm border-collapse">
+                <table class="w-full text-left text-sm">
                     <thead>
-                        <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
-                            <th class="pb-3 px-4">Request ID</th>
-                            <th class="pb-3 px-4">Category</th>
-                            <th class="pb-3 px-4">Weight</th>
-                            <th class="pb-3 px-4">Current Status</th>
-                            <th class="pb-3 px-4 text-right">Pipeline Action</th>
+                        <tr class="border-b border-slate-200 text-slate-700 text-xs uppercase tracking-wider bg-slate-50">
+                            <th class="pb-3 px-4 font-semibold">Request ID</th>
+                            <th class="pb-3 px-4 font-semibold">Category</th>
+                            <th class="pb-3 px-4 font-semibold">Weight</th>
+                            <th class="pb-3 px-4 font-semibold">Current Status</th>
+                            <th class="pb-3 px-4 text-right font-semibold">Action</th>
                         </tr>
                     </thead>
                     <!-- ✅ FIXED: This dynamic body container hooks straight into Google Cloud Firebase -->
-                    <tbody id="adminLedgerBody" class="divide-y divide-slate-800/30">
+                    <tbody id="adminLedgerBody" class="divide-y divide-slate-100">
                         <!-- Administrative data rows inject automatically here -->
                     </tbody>
                 </table>
@@ -99,18 +99,18 @@
 
                     // Define design badge variables clearly based on string conditions
                     const statusStyles = currentStatus === 'PENDING' 
-                        ? 'text-amber-400 border-amber-500/20 bg-amber-500/5' 
-                        : 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5';
+                        ? 'text-amber-700 border-amber-200 bg-amber-50' 
+                        : 'text-emerald-700 border-emerald-200 bg-emerald-50';
 
                     const actionButton = currentStatus === 'PENDING' 
-                        ? `<button id="btn-${docId}" class="text-xs font-bold text-slate-900 bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded-lg shadow transition-all active:scale-95">Advance Status ➡️</button>`
-                        : `<span class="inline-flex text-emerald-400 font-semibold text-xs bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-check mr-1.5 mt-0.5"></i>Collected</span>`;
+                        ? `<button id="btn-${docId}" class="text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded-lg shadow transition-all active:scale-95">Advance Status ➡️</button>`
+                        : `<span class="inline-flex text-emerald-700 font-semibold text-xs bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-check mr-1.5 mt-0.5"></i>Collected</span>`;
 
                     body.innerHTML += `
-                        <tr class="border-b border-slate-800/50 hover:bg-slate-800/10 transition-all">
-                            <td class="py-4 px-4 font-mono text-xs text-slate-400">${docId.substring(0,6).toUpperCase()}</td>
-                            <td class="py-4 px-4 font-medium text-slate-200">${itemType}</td>
-                            <td class="py-4 px-4 text-slate-300">${itemWeight} kg</td>
+                        <tr class="border-b border-slate-200 hover:bg-slate-50 transition-all">
+                            <td class="py-4 px-4 font-mono text-xs text-slate-600">${docId.substring(0,6).toUpperCase()}</td>
+                            <td class="py-4 px-4 font-medium text-slate-800">${itemType}</td>
+                            <td class="py-4 px-4 text-slate-700">${itemWeight} kg</td>
                             <td class="py-4 px-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 text-xs border font-semibold rounded-lg ${statusStyles}">${currentStatus.toLowerCase()}</span>
                             </td>
