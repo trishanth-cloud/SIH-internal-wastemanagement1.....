@@ -1,7 +1,5 @@
-import { db } from "./firebase-config.js";
-import { getAuth, onAuthStateChanged } from "https://gstatic.com";
-
-const auth = getAuth();
+import { auth } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
 // Monitor active user sessions to block unauthorized access
 onAuthStateChanged(auth, (user) => {
