@@ -96,7 +96,7 @@
                 } else {
                     const adminCred = await createUserWithEmailAndPassword(auth, email, password);
                     // Store admin in admins collection
-                    await setDoc(doc(collection(db, "admins"), adminCred.user.uid), {
+                    await setDoc(doc(db, "admins", adminCred.user.uid), {
                         email: email,
                         uid: adminCred.user.uid,
                         role: "admin",

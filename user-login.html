@@ -96,7 +96,7 @@
                 } else {
                     const userCred = await createUserWithEmailAndPassword(auth, email, password);
                     // Store user in users collection
-                    await setDoc(doc(collection(db, "users"), userCred.user.uid), {
+                    await setDoc(doc(db, "users", userCred.user.uid), {
                         email: email,
                         uid: userCred.user.uid,
                         role: "user",

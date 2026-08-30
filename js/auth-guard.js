@@ -13,11 +13,11 @@ onAuthStateChanged(auth, async (user) => {
 
         try {
             // Check if user is in users collection
-            const userDocRef = doc(collection(db, "users"), uid);
+            const userDocRef = doc(db, "users", uid);
             const userDoc = await getDoc(userDocRef);
 
             // Check if user is in admins collection
-            const adminDocRef = doc(collection(db, "admins"), uid);
+            const adminDocRef = doc(db, "admins", uid);
             const adminDoc = await getDoc(adminDocRef);
 
             // Route based on role and current page
