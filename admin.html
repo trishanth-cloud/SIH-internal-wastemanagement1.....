@@ -4,42 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jury Admin Panel - EcoTrack</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cloudflare.com">
 </head>
-<body class="bg-slate-50 min-h-screen">
-    <nav class="bg-slate-900 text-white p-4 flex justify-between items-center shadow-md">
-        <span class="font-bold text-emerald-400">♻️ EcoTrack Jury Demonstration Panel</span>
-        <a href="dashboard.html" class="text-sm bg-slate-800 px-3 py-1 rounded text-slate-300 hover:text-white">← Return to User View</a>
-    </nav>
-    <main class="p-8 max-w-6xl mx-auto">
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-amber-800 text-sm">
-            💡 <strong>Jury Demo Tip:</strong> Show how the administrator handles live ticket pipelines across campus zones.
+<body class="bg-[#0f172a] text-slate-100 min-h-screen relative font-sans">
+
+    <!-- Admin Navigation Banner -->
+    <nav class="border-b border-slate-800 bg-[#1e293b]/50 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <span class="text-emerald-400 text-xl"><i class="fa-solid fa-shield-halved"></i></span>
+            <span class="font-bold tracking-wider bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">♻️ EcoTrack Jury Demonstration Panel</span>
         </div>
-        <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-            <h2 class="text-xl font-bold text-slate-800 mb-6">Central Inbound Pipeline</h2>
+        <a href="dashboard.html" class="text-xs text-slate-400 hover:text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg bg-slate-800/40 transition-all">
+            <i class="fa-solid fa-arrow-left mr-1.5"></i>Return User View
+        </a>
+    </nav>
+
+    <!-- Main Workspace Area -->
+    <main class="max-w-6xl mx-auto p-6 relative z-10 space-y-6">
+        
+        <!-- Jury Tip Alert Box -->
+        <div class="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-amber-400 text-sm flex items-center space-x-3 shadow-lg">
+            <span class="text-lg"><i class="fa-regular fa-lightbulb"></i></span>
+            <div>
+                <strong>Jury Demo Tip:</strong> Open your user dashboard on another screen. Click "Advance Status" here and watch the user table change in real-time.
+            </div>
+        </div>
+
+        <!-- Administrative Table Management Grid -->
+        <div class="bg-[#1e293b]/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-6 shadow-2xl">
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-emerald-400"><i class="fa-solid fa-truck-ramp-box mr-2"></i>Central Inbound Pipeline</h2>
+                <p class="text-xs text-slate-400 mt-1">Review live student submissions and execute pickup verification dispatches instantly.</p>
+            </div>
+            
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full text-left text-sm border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-100 text-slate-400 text-sm">
-                            <th class="py-3 px-4">User ID</th>
-                            <th class="py-3 px-4">Category</th>
-                            <th class="py-3 px-4">Weight</th>
-                            <th class="py-3 px-4">Current Status</th>
-                            <th class="py-3 px-4 text-right">Pipeline Action</th>
+                        <tr class="border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
+                            <th class="pb-3 px-4">Request ID</th>
+                            <th class="pb-3 px-4">Category</th>
+                            <th class="pb-3 px-4">Weight</th>
+                            <th class="pb-3 px-4">Current Status</th>
+                            <th class="pb-3 px-4 text-right">Pipeline Action</th>
                         </tr>
                     </thead>
-                    <tbody class="text-slate-600 text-sm divide-y divide-slate-50">
-                        <tr class="border-b border-slate-50">
-                            <td class="py-3 px-4 font-mono text-xs text-slate-400">USR-2091</td>
-                            <td class="py-3 px-4 font-medium text-slate-800">Laptop / Desktop</td>
-                            <td class="py-3 px-4">2.4 kg</td>
-                            <td class="py-3 px-4"><span class="px-2 py-0.5 text-xs rounded font-medium bg-amber-100 text-amber-800">pending</span></td>
-                            <td class="py-3 px-4 text-right"><button class="text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded font-medium transition">Advance Status ➡️</button></td>
-                        </tr>
+                    <!-- ✅ FIXED: This dynamic body container hooks straight into Google Cloud Firebase -->
+                    <tbody id="adminLedgerBody" class="divide-y divide-slate-800/30">
+                        <!-- Administrative data rows inject automatically here -->
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
+
+    <!-- Real-Time Administrative Pipeline Verification Sync Script -->
+    <script type="module">
+        import { db, collection, onSnapshot, doc, updateDoc } from "./js/firebase-config.js";
+
+        const wasteCollectionRef = collection(db, "waste_requests");
+
+        function listenToAdminCloud() {
+            onSnapshot(wasteCollectionRef, (snapshot) => {
+                const body = document.getElementById('adminLedgerBody');
+                body.innerHTML = '';
+
+                // Handle completely empty collection loops gracefully
+                if(snapshot.empty) {
+                    body.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-sm text-slate-500">
+                                <i class="fa-solid fa-inbox block text-2xl mb-2 text-slate-600"></i>
+                                No active incoming e-waste tickets in queue.
+                            </td>
+                        </tr>`;
+                    return;
+                }
+
+                snapshot.forEach(documentSnapshot => {
+                    const item = documentSnapshot.data();
+                    const docId = documentSnapshot.id;
+                    
+                    const itemType = item.type || "Unknown Component";
+                    const itemWeight = item.weight || 0;
+                    const currentStatus = item.status || "PENDING";
+
+                    // Define design badge variables clearly based on string conditions
+                    const statusStyles = currentStatus === 'PENDING' 
+                        ? 'text-amber-400 border-amber-500/20 bg-amber-500/5' 
+                        : 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5';
+
+                    const actionButton = currentStatus === 'PENDING' 
+                        ? `<button id="btn-${docId}" class="text-xs font-bold text-slate-900 bg-amber-400 hover:bg-amber-300 px-3 py-1.5 rounded-lg shadow transition-all active:scale-95">Advance Status ➡️</button>`
+                        : `<span class="inline-flex text-emerald-400 font-semibold text-xs bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-check mr-1.5 mt-0.5"></i>Collected</span>`;
+
+                    body.innerHTML += `
+                        <tr class="border-b border-slate-800/50 hover:bg-slate-800/10 transition-all">
+                            <td class="py-4 px-4 font-mono text-xs text-slate-400">${docId.substring(0,6).toUpperCase()}</td>
+                            <td class="py-4 px-4 font-medium text-slate-200">${itemType}</td>
+                            <td class="py-4 px-4 text-slate-300">${itemWeight} kg</td>
+                            <td class="py-4 px-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs border font-semibold rounded-lg ${statusStyles}">${currentStatus.toLowerCase()}</span>
+                            </td>
+                            <td class="py-4 px-4 text-right" id="cell-${docId}">${actionButton}</td>
+                        </tr>`;
+                });
+
+                // Attach isolated async events securely to dynamically generated pipeline elements
+                snapshot.forEach(documentSnapshot => {
+                    const docId = documentSnapshot.id;
+                    const btn = document.getElementById(`btn-${docId}`);
+                    if (btn) {
+                        btn.onclick = async () => {
+                            try {
+                                const targetDocRef = doc(db, "waste_requests", docId);
+                                await updateDoc(targetDocRef, { status: "COLLECTED" });
+                            } catch (err) {
+                                console.error("Cloud mutation rejection workflow error: ", err);
+                            }
+                        };
+                    }
+                });
+            });
+        }
+
+        window.onload = listenToAdminCloud;
+    </script>
 </body>
 </html>
