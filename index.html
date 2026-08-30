@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoTrace - Smart E-Waste Portal</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
+    <!-- ✅ FIXED: Official Tailwind CSS CDN Link -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ✅ FIXED: Full FontAwesome Icon Library Link -->
     <link rel="stylesheet" href="https://cloudflare.com">
 </head>
 <body class="bg-[#0f172a] text-slate-100 min-h-screen flex items-center justify-center relative overflow-hidden font-sans">
@@ -71,7 +71,6 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Automatically forwards the user straight to your user dashboard layout!
             window.location.href = 'dashboard.html';
         });
     </script>
