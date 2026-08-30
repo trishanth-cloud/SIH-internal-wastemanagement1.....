@@ -3,75 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTrace - Smart E-Waste Portal</title>
-    <!-- ✅ FIXED: Official Tailwind CSS CDN Link -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- ✅ FIXED: Full FontAwesome Icon Library Link -->
+    <title>EcoTrace - Portal Gateway</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cloudflare.com">
 </head>
 <body class="bg-[#0f172a] text-slate-100 min-h-screen flex items-center justify-center relative overflow-hidden font-sans">
 
-    <!-- Subtle Tech Background Accent Gradients -->
+    <!-- Ambient Glow Layout Assets -->
     <div class="absolute w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] top-[-10%] left-[-10%] animate-pulse"></div>
     <div class="absolute w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] bottom-[-10%] right-[-10%]"></div>
 
-    <!-- Login Container Box -->
+    <!-- Central Authentication Frame Container -->
     <div class="w-full max-w-md mx-4 bg-[#1e293b]/60 backdrop-blur-md border border-slate-700/50 p-8 rounded-2xl shadow-2xl relative z-10">
         
-        <!-- Header Branding Sector -->
+        
         <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 rounded-xl mb-4 text-emerald-400 text-2xl shadow-inner shadow-emerald-500/5">
                 <i class="fa-solid fa-leaf"></i>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">EcoTrace Login</h1>
-            <p class="text-sm text-slate-400 mt-1">Smart India Hackathon Internal Prototype</p>
+            <h1 id="portalTitle" class="text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">EcoTrace Login</h1>
+            <p id="portalSub" class="text-sm text-slate-400 mt-1">Authorized User Hub</p>
         </div>
 
-        <!-- Interactive Form System -->
-        <form id="loginForm" class="space-y-5">
-            <!-- Email Entry Vector -->
+        <!-- Form Dispatch Pipeline -->
+        <form id="authForm" class="space-y-5">
+            <!-- Username/Email Field Block -->
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Institutional Email ID</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
                         <i class="fa-regular fa-envelope"></i>
                     </span>
-                    <input type="email" required placeholder="student@college.edu" 
+                    <input id="email" type="email" required placeholder="name@college.edu (or admin@...)" 
                         class="w-full bg-[#0f172a]/80 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-200">
                 </div>
             </div>
 
-            <!-- Password Entry Vector -->
+            <!-- Password Entry Field Block -->
             <div>
                 <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Secure Access Key</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
                         <i class="fa-solid fa-lock"></i>
                     </span>
-                    <input type="password" required placeholder="••••••••" 
+                    <input id="password" type="password" required placeholder="••••••••" 
                         class="w-full bg-[#0f172a]/80 border border-slate-700 rounded-xl py-3 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-200">
                 </div>
             </div>
 
-            <!-- Operational Redirection Trigger -->
-            <button type="submit" 
+            <!-- Trigger Execution Control -->
+            <button type="submit" id="submitBtn"
                 class="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-900 font-bold py-3 rounded-xl shadow-lg shadow-emerald-500/10 active:scale-[0.98] transition-all duration-150 flex items-center justify-center space-x-2">
-                <span>Enter Dashboard</span>
+                <span>Enter Portal</span>
                 <i class="fa-solid fa-arrow-right text-xs"></i>
             </button>
         </form>
 
-        <!-- Footer Alternative Link Interface -->
-        <div class="mt-6 text-center text-xs text-slate-500">
-            Authorized access only. Ground data sync verified.
+        <!-- Functional Mode Toggle Switch Link -->
+        <div class="mt-6 text-center text-xs">
+            <button id="toggleViewBtn" class="text-emerald-400 hover:text-emerald-300 underline font-medium focus:outline-none">
+                Need an account? Register here
+            </button>
         </div>
     </div>
 
-    <!-- Frontend Navigation Link Logic Script -->
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+    <!-- Live Authentication Architecture Script Bridge -->
+    <script type="module">
+        import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "./js/firebase-config.js";
+
+        let isLoginMode = true;
+
+        const portalTitle = document.getElementById('portalTitle');
+        const portalSub = document.getElementById('portalSub');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleViewBtn = document.getElementById('toggleViewBtn');
+        const authForm = document.getElementById('authForm');
+
+        // Dynamic visual mode switcher logic
+        toggleViewBtn.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                portalTitle.innerText = "EcoTrace Login";
+                portalSub.innerText = "Authorized User Hub";
+                submitBtn.innerHTML = "<span>Enter Portal</span> <i class='fa-solid fa-arrow-right text-xs'></i>";
+                toggleViewBtn.innerText = "Need an account? Register here";
+            } else {
+                portalTitle.innerText = "Create Account";
+                portalSub.innerText = "Register New Identity Credentials";
+                submitBtn.innerHTML = "<span>Register Account</span> <i class='fa-solid fa-user-plus text-xs'></i>";
+                toggleViewBtn.innerText = "Already registered? Login here";
+            }
+        });
+
+        // Cloud execution routing database controller
+        authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            window.location.href = 'dashboard.html';
+            const emailValue = document.getElementById('email').value.trim();
+            const passwordValue = document.getElementById('password').value;
+
+            try {
+                if (isLoginMode) {
+                    // Firebase cloud sign in processing loop
+                    await signInWithEmailAndPassword(auth, emailValue, passwordValue);
+                    
+                    // Route users based on explicit text criteria evaluation
+                    if (emailValue.toLowerCase().startsWith('admin')) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                } else {
+                    // Firebase cloud database registration processing loop
+                    await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
+                    alert("Account successfully created in database! Logging you in...");
+                    
+                    if (emailValue.toLowerCase().startsWith('admin')) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                }
+            } catch (error) {
+                // Clear descriptive parsing fallback alerts for wrong data
+                alert("Authentication Failed: " + error.message.replace("Firebase: ", ""));
+            }
         });
     </script>
 </body>
