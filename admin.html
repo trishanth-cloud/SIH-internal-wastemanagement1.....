@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jury Admin Panel - EcoTrack</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-slate-100 text-slate-800 min-h-screen relative font-sans">
 
@@ -25,49 +25,155 @@
     </nav>
 
     <!-- Main Workspace Area -->
-    <main class="max-w-6xl mx-auto p-6 relative z-10 space-y-6">
-        
-        <!-- Jury Tip Alert Box -->
+    <main class="max-w-7xl mx-auto p-6 relative z-10 space-y-6">
         <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-700 text-sm flex items-center space-x-3 shadow-sm">
             <span class="text-lg"><i class="fa-regular fa-lightbulb"></i></span>
             <div>
-                <strong>Admin Tip:</strong> Real-time dashboard shows all incoming e-waste requests. Click "Advance Status" to mark items as collected.
+                <strong>Admin Tip:</strong> Review each pickup location, update status, and act on landfill reports in real time.
             </div>
         </div>
 
-        <!-- Administrative Table Management Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                <div class="text-xs uppercase tracking-wider text-slate-400">Total Requests</div>
+                <div id="adminTotalReq" class="mt-3 text-3xl font-bold text-slate-800">0</div>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                <div class="text-xs uppercase tracking-wider text-slate-400">Active Pickups</div>
+                <div id="adminActivePickups" class="mt-3 text-3xl font-bold text-amber-600">0</div>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                <div class="text-xs uppercase tracking-wider text-slate-400">Recovered Weight</div>
+                <div id="adminRecoveredWeight" class="mt-3 text-3xl font-bold text-emerald-600">0 kg</div>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+                <div class="text-xs uppercase tracking-wider text-slate-400">CO₂ Saved</div>
+                <div id="adminCarbonSaved" class="mt-3 text-3xl font-bold text-blue-600">0 kg</div>
+            </div>
+        </section>
+
         <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-md">
             <div class="mb-6">
                 <h2 class="text-lg font-bold text-amber-700"><i class="fa-solid fa-truck-ramp-box mr-2"></i>E-Waste Processing Pipeline</h2>
                 <p class="text-sm text-slate-600 mt-1">Manage incoming submissions and track collection status.</p>
             </div>
-            
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
                     <thead>
                         <tr class="border-b border-slate-200 text-slate-700 text-xs uppercase tracking-wider bg-slate-50">
                             <th class="pb-3 px-4 font-semibold">Request ID</th>
-                            <th class="pb-3 px-4 font-semibold">Category</th>
+                            <th class="pb-3 px-4 font-semibold">User / Category</th>
                             <th class="pb-3 px-4 font-semibold">Weight</th>
-                            <th class="pb-3 px-4 font-semibold">Current Status</th>
+                            <th class="pb-3 px-4 font-semibold">Pickup Address</th>
+                            <th class="pb-3 px-4 font-semibold">Status</th>
+                            <th class="pb-3 px-4 font-semibold">ETA</th>
                             <th class="pb-3 px-4 text-right font-semibold">Action</th>
                         </tr>
                     </thead>
-                    <!-- ✅ FIXED: This dynamic body container hooks straight into Google Cloud Firebase -->
                     <tbody id="adminLedgerBody" class="divide-y divide-slate-100">
-                        <!-- Administrative data rows inject automatically here -->
+                        <tr><td colspan="7" class="py-8 text-center text-sm text-slate-500">Loading requests...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-md">
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-orange-700"><i class="fa-solid fa-map-location-dot mr-2"></i>Reported Landfills</h2>
+                <p class="text-sm text-slate-600 mt-1">Monitor illegal dump locations reported by the public and dispatch verification.</p>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-6">
+                <div id="adminLandfillMap" class="w-full h-80 rounded-xl border border-slate-200 bg-slate-50"></div>
+                <div class="overflow-y-auto max-h-80">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-700 text-xs uppercase tracking-wider bg-slate-50">
+                                <th class="pb-3 px-3 font-semibold">Location</th>
+                                <th class="pb-3 px-3 font-semibold">Severity</th>
+                                <th class="pb-3 px-3 font-semibold">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminLandfillTableBody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- Real-Time Administrative Pipeline Verification Sync Script -->
     <script type="module">
         import { auth, db, collection, onSnapshot, doc, updateDoc } from "./js/firebase-config.js";
         import { signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
         const wasteCollectionRef = collection(db, "waste_requests");
+        const landfillCollectionRef = collection(db, "landfill_reports");
+        let landfillMap;
+        let landfillLayerGroup;
+
+        function initLandfillMap() {
+            const container = document.getElementById('adminLandfillMap');
+            if (!container || landfillMap) return;
+
+            landfillMap = L.map(container, { zoomControl: true }).setView([20.5937, 78.9629], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(landfillMap);
+            landfillLayerGroup = L.layerGroup().addTo(landfillMap);
+        }
+
+        function renderLandfillSnapshots(snapshot) {
+            const tableBody = document.getElementById('adminLandfillTableBody');
+            if (!tableBody) return;
+
+            initLandfillMap();
+            if (landfillLayerGroup) {
+                landfillLayerGroup.clearLayers();
+            }
+
+            const entries = [];
+            snapshot.forEach((itemSnap) => {
+                const item = itemSnap.data();
+                entries.push({ id: itemSnap.id, ...item });
+            });
+
+            if (!entries.length) {
+                tableBody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-sm text-slate-500">No landfill reports submitted yet.</td></tr>';
+                if (landfillMap) {
+                    landfillMap.setView([20.5937, 78.9629], 5);
+                }
+                return;
+            }
+
+            tableBody.innerHTML = entries.map((item) => {
+                const location = item.address || 'Unspecified location';
+                const severity = item.severity || 'Medium';
+                const status = item.status || 'PENDING';
+                const badgeClass = status === 'RESOLVED'
+                    ? 'bg-emerald-100 text-emerald-700'
+                    : status === 'VERIFIED'
+                        ? 'bg-blue-100 text-blue-700'
+                        : 'bg-orange-100 text-orange-700';
+
+                return `
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3 px-3 text-slate-700">${location}</td>
+                        <td class="py-3 px-3"><span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${severity === 'Critical' ? 'bg-red-100 text-red-700' : severity === 'High' ? 'bg-orange-100 text-orange-700' : severity === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-700'}">${severity}</span></td>
+                        <td class="py-3 px-3"><span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${badgeClass}">${status}</span></td>
+                    </tr>
+                `;
+            }).join('');
+
+            const validMarkers = entries.filter((item) => Number.isFinite(item.latitude) && Number.isFinite(item.longitude));
+            validMarkers.forEach((item) => {
+                const marker = L.marker([item.latitude, item.longitude]).addTo(landfillLayerGroup);
+                marker.bindPopup(`<strong>${item.address || 'Reported landfill'}</strong><br>${item.severity || 'Medium'} • ${item.status || 'PENDING'}`);
+            });
+
+            if (validMarkers.length) {
+                const bounds = validMarkers.map((item) => [item.latitude, item.longitude]);
+                landfillMap.fitBounds(bounds, { padding: [28, 28] });
+            }
+        }
 
         function listenToAdminCloud() {
             onSnapshot(wasteCollectionRef, (snapshot) => {
@@ -77,33 +183,17 @@
                 let totalRequests = 0;
                 let activePickups = 0;
                 let recoveredWeight = 0;
-                let pendingCount = 0;
-                let transitCount = 0;
-                let recycledCount = 0;
 
-                if(snapshot.empty) {
+                if (snapshot.empty) {
                     document.getElementById('adminTotalReq').innerText = '0';
                     document.getElementById('adminActivePickups').innerText = '0';
                     document.getElementById('adminRecoveredWeight').innerText = '0 kg';
                     document.getElementById('adminCarbonSaved').innerText = '0 kg';
-                    document.getElementById('pendingRatio').innerText = '0%';
-                    document.getElementById('transitRatio').innerText = '0%';
-                    document.getElementById('recycledRatio').innerText = '0%';
-                    document.getElementById('pendingBar').style.width = '0%';
-                    document.getElementById('transitBar').style.width = '0%';
-                    document.getElementById('recycledBar').style.width = '0%';
-
-                    body.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="py-8 text-center text-sm text-slate-500">
-                                <i class="fa-solid fa-inbox block text-2xl mb-2 text-slate-600"></i>
-                                No active incoming e-waste tickets in queue.
-                            </td>
-                        </tr>`;
+                    body.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-sm text-slate-500"><i class="fa-solid fa-inbox block text-2xl mb-2 text-slate-600"></i>No active incoming e-waste tickets in queue.</td></tr>`;
                     return;
                 }
 
-                snapshot.forEach(documentSnapshot => {
+                snapshot.forEach((documentSnapshot) => {
                     totalRequests++;
                     const item = documentSnapshot.data();
                     const docId = documentSnapshot.id;
@@ -111,13 +201,13 @@
                     const itemWeight = parseFloat(item.weight || 0);
                     const currentStatus = item.status || "PENDING";
                     const requesterEmail = item.userEmail || "Unknown user";
+                    const location = item.address || 'Address not provided';
                     const etaValue = item.estimatedPickupTime || "";
                     recoveredWeight += itemWeight;
 
-                    if (currentStatus === 'PENDING') pendingCount++;
-                    if (currentStatus === 'ASSIGNED' || currentStatus === 'IN_TRANSIT') transitCount++;
-                    if (currentStatus === 'COLLECTED' || currentStatus === 'RECYCLED') recycledCount++;
-                    if (currentStatus === 'ASSIGNED' || currentStatus === 'IN_TRANSIT' || currentStatus === 'COLLECTED') activePickups++;
+                    if (currentStatus === 'ASSIGNED' || currentStatus === 'IN_TRANSIT' || currentStatus === 'COLLECTED') {
+                        activePickups++;
+                    }
 
                     const statusStyles = currentStatus === 'PENDING'
                         ? 'text-amber-700 border-amber-200 bg-amber-50'
@@ -131,12 +221,13 @@
 
                     body.innerHTML += `
                         <tr class="border-b border-slate-200 hover:bg-slate-50 transition-all align-top">
-                            <td class="py-4 px-4 font-mono text-xs text-slate-600">${docId.substring(0,6).toUpperCase()}</td>
+                            <td class="py-4 px-4 font-mono text-xs text-slate-600">${docId.substring(0, 6).toUpperCase()}</td>
                             <td class="py-4 px-4 text-slate-800">
                                 <div class="font-medium">${requesterEmail}</div>
                                 <div class="text-xs text-slate-500 mt-1">${itemType}</div>
                             </td>
-                            <td class="py-4 px-4 text-slate-700">${itemWeight} kg</td>
+                            <td class="py-4 px-4 text-slate-700">${itemWeight.toFixed(1)} kg</td>
+                            <td class="py-4 px-4 text-slate-700 max-w-xs">${location}</td>
                             <td class="py-4 px-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 text-xs border font-semibold rounded-lg ${statusStyles}">${currentStatus}</span>
                             </td>
@@ -156,20 +247,10 @@
                         </tr>`;
                 });
 
-                const pendingPercent = (pendingCount / totalRequests) * 100 || 0;
-                const transitPercent = (transitCount / totalRequests) * 100 || 0;
-                const recycledPercent = (recycledCount / totalRequests) * 100 || 0;
-
                 document.getElementById('adminTotalReq').innerText = totalRequests;
                 document.getElementById('adminActivePickups').innerText = activePickups;
                 document.getElementById('adminRecoveredWeight').innerText = `${recoveredWeight.toFixed(1)} kg`;
                 document.getElementById('adminCarbonSaved').innerText = `${(recoveredWeight * 1.8).toFixed(1)} kg`;
-                document.getElementById('pendingRatio').innerText = `${pendingPercent.toFixed(0)}%`;
-                document.getElementById('transitRatio').innerText = `${transitPercent.toFixed(0)}%`;
-                document.getElementById('recycledRatio').innerText = `${recycledPercent.toFixed(0)}%`;
-                document.getElementById('pendingBar').style.width = `${pendingPercent}%`;
-                document.getElementById('transitBar').style.width = `${transitPercent}%`;
-                document.getElementById('recycledBar').style.width = `${recycledPercent}%`;
 
                 document.querySelectorAll('.status-select').forEach((select) => {
                     select.addEventListener('change', async (event) => {
@@ -209,9 +290,12 @@
                     });
                 });
             });
+
+            onSnapshot(landfillCollectionRef, (snapshot) => {
+                renderLandfillSnapshots(snapshot);
+            });
         }
 
-        // Admin Logout Handler
         document.getElementById('adminLogoutBtn').addEventListener('click', async () => {
             try {
                 await signOut(auth);

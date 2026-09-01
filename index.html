@@ -4,28 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoTrace - Portal Gateway</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #031c1f;
+            --bg-mid: #0b2d2c;
+            --panel: rgba(10, 28, 31, 0.72);
+            --panel-strong: rgba(10, 28, 31, 0.88);
+            --emerald: #34d399;
+            --teal: #2dd4bf;
+            --cyan: #67e8f9;
+            --amber: #fbbf24;
+            --blue: #60a5fa;
+        }
+
+        body {
+            background: radial-gradient(circle at top, rgba(45, 212, 191, 0.15), transparent 30%),
+                        linear-gradient(135deg, var(--bg-deep), var(--bg-mid) 35%, #061b2d 100%);
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .ambient-bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        .ambient-bg::before {
+            content: "";
+            position: absolute;
+            inset: -20% -10% auto auto;
+            width: 50vw;
+            height: 50vw;
+            background: url('https://media.giphy.com/media/l3vR85Pn5xFf7Pq1G/giphy.gif') center/cover no-repeat;
+            border-radius: 999px;
+            filter: blur(10px) brightness(1.2);
+            opacity: 0.18;
+            animation: drift 24s ease-in-out infinite alternate;
+        }
+
+        .ambient-bg::after {
+            content: "";
+            position: absolute;
+            left: -10%;
+            bottom: -10%;
+            width: 48vw;
+            height: 48vw;
+            background: url('https://media.giphy.com/media/3o7TKtMeODp0TQMoPC/giphy.gif') center/cover no-repeat;
+            border-radius: 999px;
+            filter: blur(12px) brightness(1.18);
+            opacity: 0.15;
+            animation: driftTwo 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes drift {
+            0% { transform: translate3d(-2%, 0, 0) scale(1); }
+            100% { transform: translate3d(4%, 7%, 0) scale(1.08); }
+        }
+
+        @keyframes driftTwo {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(8%, -6%, 0) scale(1.12); }
+        }
+
+        .glass-card {
+            background: linear-gradient(135deg, rgba(11, 36, 38, 0.76), rgba(15, 29, 48, 0.68));
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 25px 60px rgba(6, 17, 22, 0.45);
+        }
+    </style>
 </head>
 <body class="bg-[#021827] text-slate-100 min-h-screen overflow-y-auto font-sans">
     <div class="relative min-h-screen overflow-hidden">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(13,148,136,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.12),_transparent_25%)]"></div>
+        <div class="ambient-bg"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.16),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(34,211,238,0.12),_transparent_25%)]"></div>
 
         <div class="relative z-10 max-w-6xl mx-auto px-4 py-10 md:py-14">
             <div class="flex flex-col items-center justify-center">
                 <div class="w-full max-w-5xl">
                     <div class="grid grid-cols-1 md:grid-cols-[1fr_1.1fr_1.1fr_1fr] gap-5 items-center md:items-end">
                         <div class="flex justify-center md:justify-end">
-                            <a href="user-login.html" class="group w-full max-w-[240px] bg-[#0b2433]/70 border border-emerald-400/40 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.12)] hover:scale-[1.02] transition-all duration-300 p-5 md:p-6">
-                                <div class="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-400/40 text-emerald-300 text-3xl mb-5 group-hover:shadow-[0_0_16px_rgba(52,211,153,0.2)]">
+                            <a href="user-login.html" class="group glass-card w-full max-w-[240px] border border-emerald-400/40 rounded-2xl hover:scale-[1.02] transition-all duration-300 p-5 md:p-6">
+                                <div class="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-400/10 border border-emerald-400/50 text-emerald-300 text-3xl mb-5 shadow-[0_0_18px_rgba(52,211,153,0.2)]">
                                     <i class="fa-solid fa-user"></i>
                                 </div>
                                 <h2 class="text-3xl font-bold text-emerald-300 text-center leading-tight">User<br>Portal</h2>
                                 <p class="text-slate-300 text-center text-sm mt-4 leading-relaxed">Track and submit your electronic waste for recycling</p>
                                 <div class="mt-6 text-center">
-                                    <span class="inline-block px-5 py-2 rounded-xl border border-emerald-400/40 bg-emerald-500/10 text-emerald-300 font-semibold text-sm">Login / Register</span>
+                                    <span class="inline-block px-5 py-2 rounded-xl border border-emerald-400/50 bg-emerald-500/10 text-emerald-300 font-semibold text-sm">Login / Register</span>
                                 </div>
                             </a>
                         </div>
@@ -39,14 +109,14 @@
                         </div>
 
                         <div class="flex justify-center md:justify-center">
-                            <a href="admin-login.html" class="group w-full max-w-[240px] bg-[#12273d]/70 border border-amber-400/40 rounded-2xl shadow-[0_0_20px_rgba(251,191,36,0.12)] hover:scale-[1.02] transition-all duration-300 p-5 md:p-6">
-                                <div class="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 border border-amber-400/40 text-amber-300 text-3xl mb-5 group-hover:shadow-[0_0_16px_rgba(251,191,36,0.2)]">
+                            <a href="admin-login.html" class="group glass-card w-full max-w-[240px] border border-amber-400/40 rounded-2xl hover:scale-[1.02] transition-all duration-300 p-5 md:p-6">
+                                <div class="flex items-center justify-center w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-400/10 border border-amber-400/50 text-amber-300 text-3xl mb-5 shadow-[0_0_18px_rgba(251,191,36,0.2)]">
                                     <i class="fa-solid fa-shield-halved"></i>
                                 </div>
                                 <h2 class="text-3xl font-bold text-amber-300 text-center leading-tight">Admin<br>Portal</h2>
                                 <p class="text-slate-300 text-center text-sm mt-4 leading-relaxed">Manage and process incoming e-waste requests</p>
                                 <div class="mt-6 text-center">
-                                    <span class="inline-block px-5 py-2 rounded-xl border border-amber-400/40 bg-amber-500/10 text-amber-300 font-semibold text-sm">Login / Register</span>
+                                    <span class="inline-block px-5 py-2 rounded-xl border border-amber-400/50 bg-amber-500/10 text-amber-300 font-semibold text-sm">Login / Register</span>
                                 </div>
                             </a>
                         </div>

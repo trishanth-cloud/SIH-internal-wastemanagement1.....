@@ -4,15 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard - EcoTrack</title>
-    <!-- Tailwind CSS CDN Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Library for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- Leaflet + OpenStreetMap -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --forest-900: #052d2f;
+            --forest-800: #0b3b3b;
+            --forest-700: #124a4b;
+            --panel: rgba(255,255,255,0.85);
+            --emerald: #10b981;
+            --teal: #2dd4bf;
+            --amber: #fbbf24;
+            --sky: #67e8f9;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(45, 212, 191, 0.18), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.12), transparent 26%),
+                linear-gradient(135deg, #edfdf6 0%, #ecfeff 35%, #f8fafc 100%);
+            overflow-x: hidden;
+        }
+
+        .bg-ambient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: url('https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif') center/cover no-repeat;
+            opacity: 0.08;
+            filter: saturate(1.2) hue-rotate(-20deg);
+            animation: pulseBg 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseBg {
+            0% { transform: scale(1) translateY(0); opacity: 0.07; }
+            100% { transform: scale(1.08) translateY(-8px); opacity: 0.12; }
+        }
+
+        .dashboard-shell {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        }
+
+        .section-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(236,253,245,0.82), rgba(224,242,254,0.82));
+            border: 1px solid rgba(16, 185, 129, 0.12);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(240,253,250,0.9));
+            border: 1px solid rgba(15, 118, 110, 0.08);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
+        }
+
+        .dashboard-nav, .logout-btn, button {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .dashboard-nav:hover, .logout-btn:hover, button:hover {
+            transform: translateY(-1px);
+        }
+    </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex font-sans">
+    <div class="bg-ambient"></div>
 
     <!-- Left Navigation Sidebar -->
     <aside class="w-64 bg-slate-900 text-white p-6 flex flex-col justify-between hidden md:flex min-h-screen sticky top-0">
@@ -48,53 +114,54 @@
     </aside>
 
     <!-- Main Workspace Frame -->
-    <main class="flex-1 p-8">
-        <header class="flex justify-between items-center mb-8 gap-4">
+    <main class="dashboard-shell flex-1 p-8">
+        <header class="glass-card flex justify-between items-center mb-8 gap-4 rounded-2xl border border-emerald-100 p-5 shadow-lg">
             <div>
-                <h1 class="text-2xl font-bold text-slate-800">Welcome Back, Innovator!</h1>
-                <p class="text-slate-500 text-sm">Track and manage your electronic waste contributions.</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-600">EcoTrack</p>
+                <h1 class="text-2xl font-bold text-slate-800 mt-2">Welcome Back, Innovator!</h1>
+                <p class="text-slate-500 text-sm mt-1">Track and manage your electronic waste contributions.</p>
             </div>
             <div class="flex items-center gap-3">
-                <button type="button" onclick="openRecycleModal()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition shadow-sm cursor-pointer">+ Recycle Item</button>
-                <button type="button" class="logout-btn text-sm text-rose-600 hover:text-rose-700 border border-rose-200 px-3 py-2 rounded-lg bg-rose-50 transition-all hover:bg-rose-100">
+                <button type="button" onclick="openRecycleModal()" class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-2 rounded-xl font-medium shadow-lg shadow-emerald-200 hover:shadow-xl hover:shadow-emerald-300 cursor-pointer">+ Recycle Item</button>
+                <button type="button" class="logout-btn text-sm text-rose-600 hover:text-rose-700 border border-rose-200 px-3 py-2 rounded-xl bg-rose-50 transition-all hover:bg-rose-100">
                     <i class="fa-solid fa-right-from-bracket mr-1.5"></i>Logout
                 </button>
             </div>
         </header>
 
-        <div id="overview-panel" class="dashboard-panel">
+        <div id="overview-panel" class="dashboard-panel section-panel rounded-2xl p-5 md:p-6">
             <!-- Live Analytic Aggregation Summary Metrics -->
             <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <div class="stat-card p-6 rounded-xl">
                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Total Waste Logged</p>
                     <p class="text-3xl font-bold text-slate-800 mt-2" id="statTotalItems">0 items</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <div class="stat-card p-6 rounded-xl">
                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Diverted from Landfills</p>
                     <p class="text-3xl font-bold text-emerald-600 mt-2"><span id="statTotalWeight">0.0</span> kg</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <div class="stat-card p-6 rounded-xl">
                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Eco-Points Earned</p>
                     <p class="text-3xl font-bold text-amber-500 mt-2"><span id="statPoints">0</span> pts</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <div class="stat-card p-6 rounded-xl">
                     <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">CO₂ Avoided</p>
                     <p class="text-3xl font-bold text-blue-600 mt-2"><span id="statCO2">0.0</span> kg</p>
                 </div>
             </section>
 
             <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl p-5 shadow-sm">
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl p-5 shadow-lg shadow-emerald-200/60">
                     <p class="text-xs uppercase tracking-[0.2em] text-emerald-100">Impact</p>
                     <h3 class="text-2xl font-bold mt-3" id="impactTotal">0 kg</h3>
                     <p class="text-sm text-emerald-100 mt-2">Estimated material diverted from landfill</p>
                 </div>
-                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-5 shadow-sm">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-5 shadow-lg shadow-blue-200/60">
                     <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Pickup ETA</p>
                     <h3 class="text-2xl font-bold mt-3" id="nextEta">Not scheduled</h3>
                     <p class="text-sm text-blue-100 mt-2">Your upcoming collection window</p>
                 </div>
-                <div class="bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-xl p-5 shadow-sm">
+                <div class="bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-xl p-5 shadow-lg shadow-orange-200/60">
                     <p class="text-xs uppercase tracking-[0.2em] text-amber-100">Rewards</p>
                     <h3 class="text-2xl font-bold mt-3" id="rewardProgress">0%</h3>
                     <p class="text-sm text-amber-100 mt-2">Progress toward your next reward tier</p>
@@ -102,7 +169,7 @@
             </section>
         </div>
 
-        <section id="submissions-panel" class="dashboard-panel hidden bg-white rounded-xl border border-slate-100 p-6 shadow-sm mt-8">
+        <section id="submissions-panel" class="dashboard-panel hidden section-panel rounded-2xl p-6 mt-8">
             <h3 class="font-bold text-slate-800 mb-4 text-lg">Your Submissions</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -122,7 +189,7 @@
         </section>
 
         <section id="impact-panel" class="dashboard-panel hidden grid grid-cols-1 xl:grid-cols-1 gap-6 mt-8">
-            <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+            <div class="section-panel rounded-2xl p-6">
                 <h3 class="font-bold text-slate-800 mb-4 text-lg">Eco Impact Overview</h3>
                 <div class="space-y-4">
                     <div>
@@ -132,15 +199,15 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3 text-sm text-slate-600">
-                        <div class="bg-slate-50 p-3 rounded-lg"><div class="text-slate-400">Trees equivalent</div><div class="font-bold text-slate-800" id="treesSaved">0</div></div>
-                        <div class="bg-slate-50 p-3 rounded-lg"><div class="text-slate-400">Water saved</div><div class="font-bold text-slate-800" id="waterSaved">0 L</div></div>
+                        <div class="bg-gradient-to-br from-emerald-50 to-slate-50 p-3 rounded-lg border border-emerald-100"><div class="text-slate-400">Trees equivalent</div><div class="font-bold text-slate-800" id="treesSaved">0</div></div>
+                        <div class="bg-gradient-to-br from-sky-50 to-slate-50 p-3 rounded-lg border border-sky-100"><div class="text-slate-400">Water saved</div><div class="font-bold text-slate-800" id="waterSaved">0 L</div></div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="rewards-panel" class="dashboard-panel hidden mt-8">
-            <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+            <div class="section-panel rounded-2xl p-6">
                 <h3 class="font-bold text-slate-800 mb-4 text-lg">Reward Marketplace</h3>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-lg p-3">
@@ -169,7 +236,7 @@
         </section>
 
         <section id="leaderboard-panel" class="dashboard-panel hidden mt-8">
-            <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+            <div class="section-panel rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <h3 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-trophy mr-2 text-amber-500"></i>Community Leaderboard</h3>
@@ -196,7 +263,7 @@
         </section>
 
         <section id="landfill-panel" class="dashboard-panel hidden mt-8">
-            <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+            <div class="section-panel rounded-2xl p-6">
                 <div class="flex justify-between items-center mb-4">
                     <div>
                         <h3 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-triangle-exclamation mr-2 text-orange-500"></i>Report Illegal Landfills</h3>
@@ -206,8 +273,11 @@
                         <i class="fa-solid fa-map-pin mr-2"></i>Report Landfill
                     </button>
                 </div>
-                <div id="landfillReportsTable" class="text-slate-600 text-sm">
-                    <p class="text-center py-8 text-slate-400">No reports submitted yet. Help protect the environment!</p>
+                <div class="space-y-4">
+                    <div id="landfillMapView" class="w-full h-72 rounded-xl border border-slate-200 bg-slate-50"></div>
+                    <div id="landfillReportsTable" class="text-slate-600 text-sm">
+                        <p class="text-center py-8 text-slate-400">No reports submitted yet. Help protect the environment!</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -311,7 +381,79 @@
         import { auth, db, collection, addDoc, onSnapshot, query, where } from "./js/firebase-config.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
         const wasteCollectionRef = collection(db, "waste_requests");
+        const landfillCollectionRef = collection(db, "landfill_reports");
         let dashboardAuthListenerAttached = false;
+        let userLandfillMap;
+        let userLandfillLayerGroup;
+
+        function initUserLandfillMap() {
+            const mapContainer = document.getElementById('landfillMapView');
+            if (!mapContainer || userLandfillMap) return;
+
+            userLandfillMap = L.map(mapContainer, { zoomControl: true }).setView([20.5937, 78.9629], 5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(userLandfillMap);
+            userLandfillLayerGroup = L.layerGroup().addTo(userLandfillMap);
+        }
+
+        function renderLandfillMapReports(snapshot) {
+            const tableContainer = document.getElementById('landfillReportsTable');
+            if (!tableContainer) return;
+
+            initUserLandfillMap();
+            if (userLandfillLayerGroup) {
+                userLandfillLayerGroup.clearLayers();
+            }
+
+            const reports = [];
+            snapshot.forEach((documentSnapshot) => {
+                const report = documentSnapshot.data();
+                reports.push({ id: documentSnapshot.id, ...report });
+            });
+
+            if (!reports.length) {
+                tableContainer.innerHTML = '<p class="text-center py-8 text-slate-400">No reports submitted yet. Help protect the environment!</p>';
+                if (userLandfillMap) userLandfillMap.setView([20.5937, 78.9629], 5);
+                return;
+            }
+
+            const validReports = reports.filter((report) => Number.isFinite(report.latitude) && Number.isFinite(report.longitude));
+
+            validReports.forEach((report) => {
+                const marker = L.marker([report.latitude, report.longitude]).addTo(userLandfillLayerGroup);
+                marker.bindPopup(`<strong>${report.address || 'Landfill report'}</strong><br>${report.severity || 'Medium'} • ${report.status || 'PENDING'}`);
+            });
+
+            if (validReports.length) {
+                const bounds = validReports.map((report) => [report.latitude, report.longitude]);
+                userLandfillMap.fitBounds(bounds, { padding: [28, 28] });
+            }
+
+            tableContainer.innerHTML = `
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-sm">
+                                <th class="py-3 px-4">Location</th>
+                                <th class="py-3 px-4">Severity</th>
+                                <th class="py-3 px-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-600 text-sm divide-y divide-slate-50">
+                            ${reports.map((report) => `
+                                <tr class="hover:bg-slate-50/60">
+                                    <td class="py-3 px-4 text-slate-700">${report.address || 'Unspecified location'}</td>
+                                    <td class="py-3 px-4"><span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${report.severity === 'Critical' ? 'bg-red-100 text-red-700' : report.severity === 'High' ? 'bg-orange-100 text-orange-700' : report.severity === 'Medium' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-700'}">${report.severity || 'Medium'}</span></td>
+                                    <td class="py-3 px-4"><span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${report.status === 'RESOLVED' ? 'bg-emerald-100 text-emerald-700' : report.status === 'VERIFIED' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}">${report.status || 'PENDING'}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
 
         // Cloud listener: Watches the current user's submissions for the dashboard and all users for the leaderboard
         function syncUserDashboard() {
@@ -399,6 +541,10 @@
                         .sort((a, b) => b.points - a.points || b.totalWeight - a.totalWeight);
 
                     renderLeaderboard(leaderboardEntries);
+                });
+
+                onSnapshot(landfillCollectionRef, (snapshot) => {
+                    renderLandfillMapReports(snapshot);
                 });
             });
         }
