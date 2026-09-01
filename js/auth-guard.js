@@ -42,7 +42,12 @@ onAuthStateChanged(auth, async (user) => {
             }
 
             if (userRole === null && adminRole === null) {
-                console.warn("Role record not ready yet. Allowing request to settle.");
+                console.warn("Role record not ready yet. Allowing access for now.");
+                return;
+            }
+
+            if (adminRole === null && userRole !== "user") {
+                console.warn("Role still settling. Allowing access for now.");
                 return;
             }
 
@@ -60,7 +65,12 @@ onAuthStateChanged(auth, async (user) => {
             }
 
             if (userRole === null && adminRole === null) {
-                console.warn("Role record not ready yet. Allowing request to settle.");
+                console.warn("Role record not ready yet. Allowing access for now.");
+                return;
+            }
+
+            if (userRole === null && adminRole !== "admin") {
+                console.warn("Role still settling. Allowing access for now.");
                 return;
             }
 
