@@ -31,15 +31,41 @@ onAuthStateChanged(auth, async (user) => {
         const adminRole = adminDoc.exists() ? adminDoc.data().role : null;
 
         if (currentPath.includes("admin.html")) {
-            if (adminRole !== "admin") {
-                console.warn("Security Alert: Non-admin user trying to access admin panel. Redirecting to user dashboard.");
+            if (userRole === "user") {
+                console.warn("Security Alert: User trying to access admin panel. Redirecting to user dashboard.");
                 window.location.href = "dashboard.html";
+                return;
             }
+
+            if (adminRole === "admin") {
+                return;
+            }
+
+            if (userRole === null && adminRole === null) {
+                console.warn("Role record not ready yet. Allowing request to settle.");
+                return;
+            }
+
+            console.warn("Security Alert: Unknown role on admin page. Redirecting to portal.");
+            window.location.href = "index.html";
         } else if (currentPath.includes("dashboard.html")) {
-            if (userRole !== "user") {
-                console.warn("Security Alert: Non-user trying to access user dashboard. Redirecting to admin panel.");
+            if (adminRole === "admin") {
+                console.warn("Security Alert: Admin trying to access user dashboard. Redirecting to admin panel.");
                 window.location.href = "admin.html";
+                return;
             }
+
+            if (userRole === "user") {
+                return;
+            }
+
+            if (userRole === null && adminRole === null) {
+                console.warn("Role record not ready yet. Allowing request to settle.");
+                return;
+            }
+
+            console.warn("Security Alert: Unknown role on user dashboard. Redirecting to portal.");
+            window.location.href = "index.html";
         }
     } catch (error) {
         console.error("Auth guard error:", error);
