@@ -274,7 +274,7 @@
         import { signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
         const wasteCollectionRef = collection(db, "waste_requests");
 
-        // Cloud listener: Watches only this user's waste items and calculates totals automatically
+        // Cloud listener: Watches the current user's submissions for the dashboard and all users for the leaderboard
         function syncUserDashboard() {
             const currentUser = auth.currentUser;
             if (!currentUser) {
@@ -288,11 +288,8 @@
                 const body = document.getElementById('itemsTableBody');
                 body.innerHTML = '';
 
-                let leaderboardEntries = [];
-
                 if (snapshot.empty) {
                     body.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400">No recycled items tracked yet.</td></tr>`;
-                    renderLeaderboard([]);
                     updateStats(0, 0);
                     return;
                 }
@@ -316,13 +313,6 @@
                         document.getElementById('nextEta').innerText = estimatedTime;
                     }
 
-                    leaderboardEntries.push({
-                        userId: currentUser.uid,
-                        userEmail: currentUser.email,
-                        totalWeight,
-                        points: Math.floor(totalWeight * 10)
-                    });
-
                     body.innerHTML += `
                         <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-all">
                             <td class="py-3 px-4 font-medium text-slate-800">
@@ -338,14 +328,35 @@
                         </tr>`;
                 });
 
-                const currentUserEntry = {
-                    userId: currentUser.uid,
-                    userEmail: currentUser.email,
-                    totalWeight,
-                    points: Math.floor(totalWeight * 10)
-                };
-                renderLeaderboard([currentUserEntry]);
                 updateStats(totalCount, totalWeight);
+            });
+
+            onSnapshot(wasteCollectionRef, (snapshot) => {
+                const leaderboardMap = new Map();
+
+                snapshot.forEach((documentSnapshot) => {
+                    const item = documentSnapshot.data();
+                    const userId = item.userId || "unknown-user";
+                    const userEmail = item.userEmail || "Eco Hero";
+
+                    if (!leaderboardMap.has(userId)) {
+                        leaderboardMap.set(userId, {
+                            userId,
+                            userEmail,
+                            totalWeight: 0,
+                            points: 0
+                        });
+                    }
+
+                    const entry = leaderboardMap.get(userId);
+                    entry.totalWeight += Number(item.weight || 0);
+                    entry.points = Math.floor(entry.totalWeight * 10);
+                });
+
+                const leaderboardEntries = Array.from(leaderboardMap.values())
+                    .sort((a, b) => b.points - a.points || b.totalWeight - a.totalWeight);
+
+                renderLeaderboard(leaderboardEntries);
             });
         }
 
