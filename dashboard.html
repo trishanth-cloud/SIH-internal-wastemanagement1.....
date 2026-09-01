@@ -8,8 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Library for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpdE4aUdImXNpsM5sj6z4YyJhSIKhxQ2Q&libraries=places"></script>
+    <!-- Leaflet + OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex font-sans">
 
@@ -144,6 +145,12 @@
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-2">Pin Location on Map</label>
                     <div id="landfillMap" class="w-full h-64 rounded-lg border border-slate-200 bg-slate-50"></div>
+                    <div class="flex items-center justify-between mt-2">
+                        <p class="text-xs text-slate-500">Click on the map or use your current location</p>
+                        <button type="button" id="useMyLocationBtn" class="px-3 py-1.5 text-xs font-medium bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition">
+                            <i class="fa-solid fa-location-crosshairs mr-1"></i>Use my location
+                        </button>
+                    </div>
                 </div>
 
                 <div>
@@ -275,43 +282,81 @@
         function initLandfillMap() {
             if (landfillMap) return;
             const mapContainer = document.getElementById('landfillMap');
-            landfillMap = new google.maps.Map(mapContainer, {
-                zoom: 13,
-                center: { lat: 28.6139, lng: 77.2090 }, // Default to Delhi
-                styles: [
-                    { featureType: "poi", stylers: [{ visibility: "off" }] },
-                    { featureType: "transit", stylers: [{ visibility: "off" }] }
-                ]
-            });
+            landfillMap = L.map(mapContainer, {
+                zoomControl: true
+            }).setView([28.6139, 77.2090], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(landfillMap);
 
             // Click to set marker
-            landfillMap.addListener('click', (event) => {
-                setLandfillMarker(event.latLng);
+            landfillMap.on('click', (event) => {
+                setLandfillMarker(event.latlng);
             });
 
-            // Address search with Places API
+            document.getElementById('useMyLocationBtn').addEventListener('click', () => {
+                if (!navigator.geolocation) {
+                    alert('Geolocation is not supported in your browser. Please click the map manually.');
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latLng = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        landfillMap.setView([latLng.lat, latLng.lng], 15);
+                        setLandfillMarker(latLng);
+                    },
+                    () => {
+                        alert('Location access was denied. Please click the map manually or enter an address.');
+                    },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            });
+
+            // Address search with OpenStreetMap Nominatim
             const addressInput = document.getElementById('landfillAddress');
-            const autocomplete = new google.maps.places.Autocomplete(addressInput);
-            autocomplete.bindTo('bounds', landfillMap);
-            autocomplete.addListener('place_changed', () => {
-                const place = autocomplete.getPlace();
-                if (place.geometry && place.geometry.location) {
-                    landfillMap.panTo(place.geometry.location);
-                    setLandfillMarker(place.geometry.location);
+            addressInput.addEventListener('keydown', async (event) => {
+                if (event.key !== 'Enter') return;
+                event.preventDefault();
+
+                const query = encodeURIComponent(addressInput.value.trim());
+                if (!query) return;
+
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+                    const results = await response.json();
+                    if (!results.length) {
+                        alert('Address not found. Please click the map or enter a more specific location.');
+                        return;
+                    }
+
+                    const place = results[0];
+                    const latLng = { lat: parseFloat(place.lat), lng: parseFloat(place.lon) };
+                    landfillMap.setView([latLng.lat, latLng.lng], 15);
+                    setLandfillMarker(latLng);
+                } catch (error) {
+                    console.error('Address lookup failed:', error);
+                    alert('Unable to find this address right now. Please click the map manually.');
                 }
             });
         }
 
         function setLandfillMarker(latLng) {
             if (landfillMarker) {
-                landfillMarker.setMap(null);
+                landfillMap.removeLayer(landfillMarker);
             }
-            landfillMarker = new google.maps.Marker({
-                position: latLng,
-                map: landfillMap,
-                animation: google.maps.Animation.DROP,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/orange-dot.png'
-            });
+            landfillMarker = L.marker([latLng.lat, latLng.lng], {
+                draggable: true,
+                riseOnHover: true
+            }).addTo(landfillMap);
+
+            landfillMarker.bindPopup('Landfill location');
+            landfillMarker.openPopup();
         }
 
         // Handle landfill form submission
@@ -323,12 +368,13 @@
                 return;
             }
 
+            const latLng = landfillMarker.getLatLng();
             const formData = {
                 address: document.getElementById('landfillAddress').value,
                 description: document.getElementById('landfillDescription').value,
                 severity: document.getElementById('landfillSeverity').value,
-                latitude: landfillMarker.getPosition().lat(),
-                longitude: landfillMarker.getPosition().lng(),
+                latitude: latLng.lat,
+                longitude: latLng.lng,
                 date: new Date().toISOString(),
                 status: "PENDING",
                 photos: []
