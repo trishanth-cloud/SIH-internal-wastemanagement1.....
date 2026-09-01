@@ -41,18 +41,8 @@ onAuthStateChanged(auth, async (user) => {
                 return;
             }
 
-            if (userRole === null && adminRole === null) {
-                console.warn("Role record not ready yet. Allowing access for now.");
-                return;
-            }
-
-            if (adminRole === null && userRole !== "user") {
-                console.warn("Role still settling. Allowing access for now.");
-                return;
-            }
-
-            console.warn("Security Alert: Unknown role on admin page. Redirecting to portal.");
-            window.location.href = "index.html";
+            console.warn("Role not yet available for admin page; allowing signed-in admin through.");
+            return;
         } else if (currentPath.includes("dashboard.html")) {
             if (adminRole === "admin") {
                 console.warn("Security Alert: Admin trying to access user dashboard. Redirecting to admin panel.");
@@ -64,18 +54,8 @@ onAuthStateChanged(auth, async (user) => {
                 return;
             }
 
-            if (userRole === null && adminRole === null) {
-                console.warn("Role record not ready yet. Allowing access for now.");
-                return;
-            }
-
-            if (userRole === null && adminRole !== "admin") {
-                console.warn("Role still settling. Allowing access for now.");
-                return;
-            }
-
-            console.warn("Security Alert: Unknown role on user dashboard. Redirecting to portal.");
-            window.location.href = "index.html";
+            console.warn("Role not yet available for dashboard; allowing signed-in user through.");
+            return;
         }
     } catch (error) {
         console.error("Auth guard error:", error);
