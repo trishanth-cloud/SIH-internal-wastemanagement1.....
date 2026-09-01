@@ -40,7 +40,7 @@
         </header>
 
         <!-- Live Analytic Aggregation Summary Metrics -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
                 <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Total Waste Logged</p>
                 <p class="text-3xl font-bold text-slate-800 mt-2" id="statTotalItems">0 items</p>
@@ -52,6 +52,28 @@
             <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
                 <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Eco-Points Earned</p>
                 <p class="text-3xl font-bold text-amber-500 mt-2"><span id="statPoints">0</span> pts</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">CO₂ Avoided</p>
+                <p class="text-3xl font-bold text-blue-600 mt-2"><span id="statCO2">0.0</span> kg</p>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl p-5 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.2em] text-emerald-100">Impact</p>
+                <h3 class="text-2xl font-bold mt-3" id="impactTotal">0 kg</h3>
+                <p class="text-sm text-emerald-100 mt-2">Estimated material diverted from landfill</p>
+            </div>
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-5 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Pickup ETA</p>
+                <h3 class="text-2xl font-bold mt-3" id="nextEta">Not scheduled</h3>
+                <p class="text-sm text-blue-100 mt-2">Your upcoming collection window</p>
+            </div>
+            <div class="bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-xl p-5 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.2em] text-amber-100">Rewards</p>
+                <h3 class="text-2xl font-bold mt-3" id="rewardProgress">0%</h3>
+                <p class="text-sm text-amber-100 mt-2">Progress toward your next reward tier</p>
             </div>
         </section>
 
@@ -70,6 +92,75 @@
                     </thead>
                     <tbody id="itemsTableBody" class="text-slate-600 text-sm divide-y divide-slate-50">
                         <!-- Dynamic data injections feed here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-8">
+            <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+                <h3 class="font-bold text-slate-800 mb-4 text-lg">Eco Impact Overview</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1"><span class="text-slate-500">Material diverted</span><span class="font-semibold text-slate-700" id="impactBarLabel">0 kg</span></div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div id="impactBar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-green-400" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm text-slate-600">
+                        <div class="bg-slate-50 p-3 rounded-lg"><div class="text-slate-400">Trees equivalent</div><div class="font-bold text-slate-800" id="treesSaved">0</div></div>
+                        <div class="bg-slate-50 p-3 rounded-lg"><div class="text-slate-400">Water saved</div><div class="font-bold text-slate-800" id="waterSaved">0 L</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+                <h3 class="font-bold text-slate-800 mb-4 text-lg">Reward Marketplace</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-lg p-3">
+                        <div>
+                            <div class="text-sm font-semibold text-amber-800">EcoPass</div>
+                            <div class="text-xs text-amber-700">Transit discount</div>
+                        </div>
+                        <span class="text-sm font-bold text-amber-800">500 pts</span>
+                    </div>
+                    <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                        <div>
+                            <div class="text-sm font-semibold text-emerald-800">Campus voucher</div>
+                            <div class="text-xs text-emerald-700">Cafeteria rewards</div>
+                        </div>
+                        <span class="text-sm font-bold text-emerald-800">750 pts</span>
+                    </div>
+                    <div class="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div>
+                            <div class="text-sm font-semibold text-blue-800">Tree pledge</div>
+                            <div class="text-xs text-blue-700">Community planting</div>
+                        </div>
+                        <span class="text-sm font-bold text-blue-800">1000 pts</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm mt-8">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-trophy mr-2 text-amber-500"></i>Community Leaderboard</h3>
+                    <p class="text-xs text-slate-500 mt-1">Top eco-champions ranked by total points.</p>
+                </div>
+                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full">Top 10</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-slate-400 text-sm">
+                            <th class="py-3 px-4">Rank</th>
+                            <th class="py-3 px-4">User</th>
+                            <th class="py-3 px-4">Weight Recycled</th>
+                            <th class="py-3 px-4">Eco-Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody" class="text-slate-600 text-sm divide-y divide-slate-50">
+                        <tr><td colspan="4" class="py-6 text-center text-slate-400">Loading leaderboard...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -179,18 +270,29 @@
 
     <!-- Real-Time Firebase Cloud Operations Script -->
     <script type="module">
-        import { auth, db, collection, addDoc, onSnapshot } from "./js/firebase-config.js";
+        import { auth, db, collection, addDoc, onSnapshot, query, where } from "./js/firebase-config.js";
         import { signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
         const wasteCollectionRef = collection(db, "waste_requests");
 
-        // Cloud listener: Watches database items and calculates totals automatically
+        // Cloud listener: Watches only this user's waste items and calculates totals automatically
         function syncUserDashboard() {
-            onSnapshot(wasteCollectionRef, (snapshot) => {
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            const userWasteQuery = query(wasteCollectionRef, where("userId", "==", currentUser.uid));
+
+            onSnapshot(userWasteQuery, (snapshot) => {
                 const body = document.getElementById('itemsTableBody');
                 body.innerHTML = '';
 
+                let leaderboardEntries = [];
+
                 if (snapshot.empty) {
                     body.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400">No recycled items tracked yet.</td></tr>`;
+                    renderLeaderboard([]);
                     updateStats(0, 0);
                     return;
                 }
@@ -203,30 +305,103 @@
                     totalCount++;
                     totalWeight += parseFloat(item.weight || 0);
 
-                    // Map badge colors beautifully based on state conditions
+                    const status = item.status || "PENDING";
                     let statusBadgeColor = "bg-amber-100 text-amber-800";
-                    if (item.status === "COLLECTED") statusBadgeColor = "bg-blue-100 text-blue-800";
-                    if (item.status === "RECYCLED") statusBadgeColor = "bg-emerald-100 text-emerald-800";
+                    if (status === "ASSIGNED") statusBadgeColor = "bg-blue-100 text-blue-800";
+                    if (status === "IN_TRANSIT") statusBadgeColor = "bg-violet-100 text-violet-800";
+                    if (status === "COLLECTED" || status === "RECYCLED") statusBadgeColor = "bg-emerald-100 text-emerald-800";
+
+                    const estimatedTime = item.estimatedPickupTime ? new Date(item.estimatedPickupTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'To be assigned';
+                    if (item.estimatedPickupTime && (!document.getElementById('nextEta').textContent || document.getElementById('nextEta').textContent === 'Not scheduled')) {
+                        document.getElementById('nextEta').innerText = estimatedTime;
+                    }
+
+                    leaderboardEntries.push({
+                        userId: currentUser.uid,
+                        userEmail: currentUser.email,
+                        totalWeight,
+                        points: Math.floor(totalWeight * 10)
+                    });
 
                     body.innerHTML += `
                         <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-all">
-                            <td class="py-3 px-4 font-medium text-slate-800">${item.type || "N/A"}</td>
+                            <td class="py-3 px-4 font-medium text-slate-800">
+                                <div>${item.type || "N/A"}</div>
+                                <div class="text-[11px] text-slate-400 mt-1">${item.address || "No address given"}</div>
+                            </td>
                             <td class="py-3 px-4 text-slate-600">${item.weight || 0} kg</td>
                             <td class="py-3 px-4">
-                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusBadgeColor}">${item.status || "PENDING"}</span>
+                                <div><span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusBadgeColor}">${status}</span></div>
+                                <div class="text-[11px] text-slate-400 mt-1">ETA: ${estimatedTime}</div>
                             </td>
                             <td class="py-3 px-4 text-slate-400">${item.date || "Just now"}</td>
                         </tr>`;
                 });
 
+                const currentUserEntry = {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    totalWeight,
+                    points: Math.floor(totalWeight * 10)
+                };
+                renderLeaderboard([currentUserEntry]);
                 updateStats(totalCount, totalWeight);
             });
         }
 
         function updateStats(count, weight) {
+            const pointValue = Math.floor(weight * 10);
+            const co2Avoided = (weight * 1.8).toFixed(1);
+            const totalImpact = Math.min(weight * 10, 100);
+            const etaValue = document.getElementById('nextEta');
+            const trees = Math.max(0, Math.floor(weight / 2));
+            const water = Math.max(0, Math.floor(weight * 22));
+
             document.getElementById('statTotalItems').innerText = `${count} item${count !== 1 ? 's' : ''}`;
             document.getElementById('statTotalWeight').innerText = `${weight.toFixed(1)} kg`;
-            document.getElementById('statPoints').innerText = `${Math.floor(weight * 10)} pts`;
+            document.getElementById('statPoints').innerText = `${pointValue} pts`;
+            document.getElementById('statCO2').innerText = `${co2Avoided} kg`;
+            document.getElementById('impactTotal').innerText = `${weight.toFixed(1)} kg`;
+            document.getElementById('impactBarLabel').innerText = `${weight.toFixed(1)} kg`;
+            document.getElementById('impactBar').style.width = `${Math.min(totalImpact, 100)}%`;
+            document.getElementById('treesSaved').innerText = `${trees}`;
+            document.getElementById('waterSaved').innerText = `${water} L`;
+            document.getElementById('rewardProgress').innerText = `${Math.min(100, Math.round((pointValue / 1000) * 100))}%`;
+
+            if (!etaValue.textContent || etaValue.textContent === 'Not scheduled') {
+                etaValue.innerText = 'Not scheduled';
+            }
+        }
+
+        function renderLeaderboard(entries) {
+            const leaderboardBody = document.getElementById('leaderboardBody');
+            if (!entries.length) {
+                leaderboardBody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-slate-400">No eco champions yet. Be the first!</td></tr>';
+                return;
+            }
+
+            const currentUser = auth.currentUser;
+            const ranked = entries
+                .map(entry => ({
+                    name: entry.userEmail ? entry.userEmail.split('@')[0] : 'Eco Hero',
+                    weight: Number(entry.totalWeight || 0),
+                    points: Number(entry.points || 0),
+                    isCurrentUser: currentUser && entry.userId === currentUser.uid
+                }))
+                .sort((a, b) => b.points - a.points || b.weight - a.weight);
+
+            leaderboardBody.innerHTML = ranked.slice(0, 10).map((entry, index) => {
+                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '•';
+                const highlight = entry.isCurrentUser ? 'bg-emerald-50 border border-emerald-200' : '';
+                return `
+                    <tr class="${highlight}">
+                        <td class="py-3 px-4 font-bold text-slate-700">${medal} ${index + 1}</td>
+                        <td class="py-3 px-4 font-medium text-slate-800">${entry.name}</td>
+                        <td class="py-3 px-4 text-slate-600">${entry.weight.toFixed(1)} kg</td>
+                        <td class="py-3 px-4 font-semibold text-amber-600">${entry.points} pts</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // Handle structural new item creation and write straight to firestore
@@ -234,14 +409,24 @@
             e.preventDefault();
             const today = new Date();
             const formattedDate = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + today.getFullYear();
+            const currentUser = auth.currentUser;
+
+            if (!currentUser) {
+                window.location.href = "index.html";
+                return;
+            }
             
             try {
                 await addDoc(wasteCollectionRef, {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
                     type: document.getElementById('itemType').value,
                     weight: parseFloat(document.getElementById('itemWeight').value),
                     address: document.getElementById('pickupAddress').value,
                     date: formattedDate,
-                    status: "PENDING"
+                    status: "PENDING",
+                    estimatedPickupTime: "",
+                    createdAt: new Date().toISOString()
                 });
                 
                 document.getElementById('reportModal').classList.add('hidden');

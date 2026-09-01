@@ -1,6 +1,6 @@
 // Import modern Firebase SDK modules directly from Google's content delivery network (CDN)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
 // Your verified live cloud project credentials
@@ -29,6 +29,8 @@ export {
     updateDoc,
     setDoc,
     getDoc,
+    query,
+    where,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword
 };

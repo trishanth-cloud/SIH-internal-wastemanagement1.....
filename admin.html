@@ -77,11 +77,28 @@
                 const body = document.getElementById('adminLedgerBody');
                 body.innerHTML = '';
 
-                // Handle completely empty collection loops gracefully
+                let totalRequests = 0;
+                let activePickups = 0;
+                let recoveredWeight = 0;
+                let pendingCount = 0;
+                let transitCount = 0;
+                let recycledCount = 0;
+
                 if(snapshot.empty) {
+                    document.getElementById('adminTotalReq').innerText = '0';
+                    document.getElementById('adminActivePickups').innerText = '0';
+                    document.getElementById('adminRecoveredWeight').innerText = '0 kg';
+                    document.getElementById('adminCarbonSaved').innerText = '0 kg';
+                    document.getElementById('pendingRatio').innerText = '0%';
+                    document.getElementById('transitRatio').innerText = '0%';
+                    document.getElementById('recycledRatio').innerText = '0%';
+                    document.getElementById('pendingBar').style.width = '0%';
+                    document.getElementById('transitBar').style.width = '0%';
+                    document.getElementById('recycledBar').style.width = '0%';
+
                     body.innerHTML = `
                         <tr>
-                            <td colspan="5" class="py-8 text-center text-sm text-slate-500">
+                            <td colspan="6" class="py-8 text-center text-sm text-slate-500">
                                 <i class="fa-solid fa-inbox block text-2xl mb-2 text-slate-600"></i>
                                 No active incoming e-waste tickets in queue.
                             </td>
@@ -90,48 +107,109 @@
                 }
 
                 snapshot.forEach(documentSnapshot => {
+                    totalRequests++;
                     const item = documentSnapshot.data();
                     const docId = documentSnapshot.id;
-                    
                     const itemType = item.type || "Unknown Component";
-                    const itemWeight = item.weight || 0;
+                    const itemWeight = parseFloat(item.weight || 0);
                     const currentStatus = item.status || "PENDING";
+                    const requesterEmail = item.userEmail || "Unknown user";
+                    const etaValue = item.estimatedPickupTime || "";
+                    recoveredWeight += itemWeight;
 
-                    // Define design badge variables clearly based on string conditions
-                    const statusStyles = currentStatus === 'PENDING' 
-                        ? 'text-amber-700 border-amber-200 bg-amber-50' 
-                        : 'text-emerald-700 border-emerald-200 bg-emerald-50';
+                    if (currentStatus === 'PENDING') pendingCount++;
+                    if (currentStatus === 'ASSIGNED' || currentStatus === 'IN_TRANSIT') transitCount++;
+                    if (currentStatus === 'COLLECTED' || currentStatus === 'RECYCLED') recycledCount++;
+                    if (currentStatus === 'ASSIGNED' || currentStatus === 'IN_TRANSIT' || currentStatus === 'COLLECTED') activePickups++;
 
-                    const actionButton = currentStatus === 'PENDING' 
-                        ? `<button id="btn-${docId}" class="text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded-lg shadow transition-all active:scale-95">Advance Status ➡️</button>`
-                        : `<span class="inline-flex text-emerald-700 font-semibold text-xs bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-check mr-1.5 mt-0.5"></i>Collected</span>`;
+                    const statusStyles = currentStatus === 'PENDING'
+                        ? 'text-amber-700 border-amber-200 bg-amber-50'
+                        : currentStatus === 'ASSIGNED'
+                            ? 'text-blue-700 border-blue-200 bg-blue-50'
+                            : currentStatus === 'IN_TRANSIT'
+                                ? 'text-violet-700 border-violet-200 bg-violet-50'
+                                : 'text-emerald-700 border-emerald-200 bg-emerald-50';
+
+                    const etaDisplay = etaValue ? new Date(etaValue).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'Not scheduled';
 
                     body.innerHTML += `
-                        <tr class="border-b border-slate-200 hover:bg-slate-50 transition-all">
+                        <tr class="border-b border-slate-200 hover:bg-slate-50 transition-all align-top">
                             <td class="py-4 px-4 font-mono text-xs text-slate-600">${docId.substring(0,6).toUpperCase()}</td>
-                            <td class="py-4 px-4 font-medium text-slate-800">${itemType}</td>
+                            <td class="py-4 px-4 text-slate-800">
+                                <div class="font-medium">${requesterEmail}</div>
+                                <div class="text-xs text-slate-500 mt-1">${itemType}</div>
+                            </td>
                             <td class="py-4 px-4 text-slate-700">${itemWeight} kg</td>
                             <td class="py-4 px-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs border font-semibold rounded-lg ${statusStyles}">${currentStatus.toLowerCase()}</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs border font-semibold rounded-lg ${statusStyles}">${currentStatus}</span>
                             </td>
-                            <td class="py-4 px-4 text-right" id="cell-${docId}">${actionButton}</td>
+                            <td class="py-4 px-4 text-slate-600 text-xs">${etaDisplay}</td>
+                            <td class="py-4 px-4 text-right">
+                                <div class="flex flex-col gap-2 items-end">
+                                    <select data-docid="${docId}" class="status-select w-full max-w-[180px] border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white text-slate-700 focus:outline-none focus:border-amber-500">
+                                        <option value="PENDING" ${currentStatus === 'PENDING' ? 'selected' : ''}>PENDING</option>
+                                        <option value="ASSIGNED" ${currentStatus === 'ASSIGNED' ? 'selected' : ''}>ASSIGNED</option>
+                                        <option value="IN_TRANSIT" ${currentStatus === 'IN_TRANSIT' ? 'selected' : ''}>IN_TRANSIT</option>
+                                        <option value="COLLECTED" ${currentStatus === 'COLLECTED' ? 'selected' : ''}>COLLECTED</option>
+                                        <option value="RECYCLED" ${currentStatus === 'RECYCLED' ? 'selected' : ''}>RECYCLED</option>
+                                    </select>
+                                    <input type="datetime-local" data-docid="${docId}" class="eta-input w-full max-w-[180px] border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white text-slate-700 focus:outline-none focus:border-amber-500" value="${etaValue ? etaValue.slice(0, 16) : ''}" aria-label="Estimated pickup time">
+                                </div>
+                            </td>
                         </tr>`;
                 });
 
-                // Attach isolated async events securely to dynamically generated pipeline elements
-                snapshot.forEach(documentSnapshot => {
-                    const docId = documentSnapshot.id;
-                    const btn = document.getElementById(`btn-${docId}`);
-                    if (btn) {
-                        btn.onclick = async () => {
-                            try {
-                                const targetDocRef = doc(db, "waste_requests", docId);
-                                await updateDoc(targetDocRef, { status: "COLLECTED" });
-                            } catch (err) {
-                                console.error("Cloud mutation rejection workflow error: ", err);
-                            }
-                        };
-                    }
+                const pendingPercent = (pendingCount / totalRequests) * 100 || 0;
+                const transitPercent = (transitCount / totalRequests) * 100 || 0;
+                const recycledPercent = (recycledCount / totalRequests) * 100 || 0;
+
+                document.getElementById('adminTotalReq').innerText = totalRequests;
+                document.getElementById('adminActivePickups').innerText = activePickups;
+                document.getElementById('adminRecoveredWeight').innerText = `${recoveredWeight.toFixed(1)} kg`;
+                document.getElementById('adminCarbonSaved').innerText = `${(recoveredWeight * 1.8).toFixed(1)} kg`;
+                document.getElementById('pendingRatio').innerText = `${pendingPercent.toFixed(0)}%`;
+                document.getElementById('transitRatio').innerText = `${transitPercent.toFixed(0)}%`;
+                document.getElementById('recycledRatio').innerText = `${recycledPercent.toFixed(0)}%`;
+                document.getElementById('pendingBar').style.width = `${pendingPercent}%`;
+                document.getElementById('transitBar').style.width = `${transitPercent}%`;
+                document.getElementById('recycledBar').style.width = `${recycledPercent}%`;
+
+                document.querySelectorAll('.status-select').forEach((select) => {
+                    select.addEventListener('change', async (event) => {
+                        const docId = event.target.dataset.docid;
+                        const nextStatus = event.target.value;
+                        const etaInput = document.querySelector(`.eta-input[data-docid="${docId}"]`);
+                        const nextEta = etaInput ? etaInput.value : '';
+
+                        try {
+                            const targetDocRef = doc(db, 'waste_requests', docId);
+                            await updateDoc(targetDocRef, {
+                                status: nextStatus,
+                                estimatedPickupTime: nextEta ? new Date(nextEta).toISOString() : ''
+                            });
+                        } catch (err) {
+                            console.error('Cloud mutation rejection workflow error: ', err);
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.eta-input').forEach((input) => {
+                    input.addEventListener('change', async (event) => {
+                        const docId = event.target.dataset.docid;
+                        const etaValue = event.target.value;
+                        const statusSelect = document.querySelector(`.status-select[data-docid="${docId}"]`);
+                        const nextStatus = statusSelect ? statusSelect.value : 'PENDING';
+
+                        try {
+                            const targetDocRef = doc(db, 'waste_requests', docId);
+                            await updateDoc(targetDocRef, {
+                                status: nextStatus,
+                                estimatedPickupTime: etaValue ? new Date(etaValue).toISOString() : ''
+                            });
+                        } catch (err) {
+                            console.error('ETA update failed: ', err);
+                        }
+                    });
                 });
             });
         }
