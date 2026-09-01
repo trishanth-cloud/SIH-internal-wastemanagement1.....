@@ -30,12 +30,17 @@
 
     <!-- Main Workspace Frame -->
     <main class="flex-1 p-8">
-        <header class="flex justify-between items-center mb-8">
+        <header class="flex justify-between items-center mb-8 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-slate-800">Welcome Back, Innovator!</h1>
                 <p class="text-slate-500 text-sm">Track and manage your electronic waste contributions.</p>
             </div>
-            <button onclick="document.getElementById('reportModal').classList.remove('hidden')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition shadow-sm">+ Recycle Item</button>
+            <div class="flex items-center gap-3">
+                <button onclick="document.getElementById('reportModal').classList.remove('hidden')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition shadow-sm">+ Recycle Item</button>
+                <button id="logoutBtn" class="text-sm text-rose-600 hover:text-rose-700 border border-rose-200 px-3 py-2 rounded-lg bg-rose-50 transition-all hover:bg-rose-100">
+                    <i class="fa-solid fa-right-from-bracket mr-1.5"></i>Logout
+                </button>
+            </div>
         </header>
 
         <!-- Live Analytic Aggregation Summary Metrics -->
