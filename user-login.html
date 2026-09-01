@@ -60,7 +60,8 @@
     </div>
 
     <script type="module">
-        import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db, collection, setDoc, doc } from "./js/firebase-config.js";
+        import { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, db, setDoc, doc } from "./js/firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
         let isUserLogin = true;
         const userForm = document.getElementById('userForm');
@@ -68,6 +69,12 @@
         const userSubmitBtn = document.getElementById('userSubmitBtn');
         const userTitle = document.getElementById('userTitle');
         const userSub = document.getElementById('userSub');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
 
         userToggleBtn.addEventListener('click', () => {
             isUserLogin = !isUserLogin;
@@ -91,18 +98,18 @@
 
             try {
                 if (isUserLogin) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    window.location.href = 'dashboard.html';
+                    const result = await signInWithEmailAndPassword(auth, email, password);
+                    if (result?.user) {
+                        window.location.href = 'dashboard.html';
+                    }
                 } else {
                     const userCred = await createUserWithEmailAndPassword(auth, email, password);
-                    // Store user in users collection
                     await setDoc(doc(db, "users", userCred.user.uid), {
                         email: email,
                         uid: userCred.user.uid,
                         role: "user",
                         createdAt: new Date()
                     });
-                    alert("Account created! Logging you in...");
                     window.location.href = 'dashboard.html';
                 }
             } catch (error) {

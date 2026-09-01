@@ -19,11 +19,30 @@
         <div>
             <h2 class="text-xl font-bold text-emerald-400 tracking-tight mb-8"><i class="fa-solid fa-leaf mr-2"></i>EcoTrack Portal</h2>
             <nav class="space-y-2">
-                <a href="#" class="block px-4 py-2 bg-slate-800 text-emerald-400 rounded-lg font-medium"><i class="fa-solid fa-chart-pie mr-2"></i>Dashboard</a>
+                <button type="button" class="dashboard-nav block w-full text-left px-4 py-2 bg-slate-800 text-emerald-400 rounded-lg font-medium transition cursor-pointer" data-target="overview-panel">
+                    <i class="fa-solid fa-chart-pie mr-2"></i>Dashboard
+                </button>
+                <div class="ml-4 space-y-1 mt-2">
+                    <button type="button" class="dashboard-nav block w-full text-left px-3 py-2 text-sm rounded-lg text-slate-300 hover:bg-slate-800 hover:text-emerald-300 transition cursor-pointer" data-target="submissions-panel">
+                        My Submissions
+                    </button>
+                    <button type="button" class="dashboard-nav block w-full text-left px-3 py-2 text-sm rounded-lg text-slate-300 hover:bg-slate-800 hover:text-emerald-300 transition cursor-pointer" data-target="impact-panel">
+                        Eco Impact Overview
+                    </button>
+                    <button type="button" class="dashboard-nav block w-full text-left px-3 py-2 text-sm rounded-lg text-slate-300 hover:bg-slate-800 hover:text-emerald-300 transition cursor-pointer" data-target="rewards-panel">
+                        Reward Marketplace
+                    </button>
+                    <button type="button" class="dashboard-nav block w-full text-left px-3 py-2 text-sm rounded-lg text-slate-300 hover:bg-slate-800 hover:text-emerald-300 transition cursor-pointer" data-target="leaderboard-panel">
+                        Community Leaderboard
+                    </button>
+                    <button type="button" class="dashboard-nav block w-full text-left px-3 py-2 text-sm rounded-lg text-slate-300 hover:bg-slate-800 hover:text-emerald-300 transition cursor-pointer" data-target="landfill-panel">
+                        Report Illegal Landfill
+                    </button>
+                </div>
             </nav>
         </div>
         <!-- Secure Log Out Action Trigger -->
-        <button id="logoutBtn" class="text-left text-sm text-slate-400 hover:text-rose-400 transition bg-transparent border-none outline-none cursor-pointer">
+        <button type="button" class="logout-btn text-left text-sm text-slate-400 hover:text-rose-400 transition bg-transparent border-none outline-none cursor-pointer">
             <i class="fa-solid fa-right-from-bracket mr-2"></i>Log Out
         </button>
     </aside>
@@ -36,53 +55,54 @@
                 <p class="text-slate-500 text-sm">Track and manage your electronic waste contributions.</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="document.getElementById('reportModal').classList.remove('hidden')" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition shadow-sm">+ Recycle Item</button>
-                <button id="logoutBtn" class="text-sm text-rose-600 hover:text-rose-700 border border-rose-200 px-3 py-2 rounded-lg bg-rose-50 transition-all hover:bg-rose-100">
+                <button type="button" onclick="openRecycleModal()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition shadow-sm cursor-pointer">+ Recycle Item</button>
+                <button type="button" class="logout-btn text-sm text-rose-600 hover:text-rose-700 border border-rose-200 px-3 py-2 rounded-lg bg-rose-50 transition-all hover:bg-rose-100">
                     <i class="fa-solid fa-right-from-bracket mr-1.5"></i>Logout
                 </button>
             </div>
         </header>
 
-        <!-- Live Analytic Aggregation Summary Metrics -->
-        <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Total Waste Logged</p>
-                <p class="text-3xl font-bold text-slate-800 mt-2" id="statTotalItems">0 items</p>
-            </div>
-            <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Diverted from Landfills</p>
-                <p class="text-3xl font-bold text-emerald-600 mt-2"><span id="statTotalWeight">0.0</span> kg</p>
-            </div>
-            <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Eco-Points Earned</p>
-                <p class="text-3xl font-bold text-amber-500 mt-2"><span id="statPoints">0</span> pts</p>
-            </div>
-            <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
-                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">CO₂ Avoided</p>
-                <p class="text-3xl font-bold text-blue-600 mt-2"><span id="statCO2">0.0</span> kg</p>
-            </div>
-        </section>
+        <div id="overview-panel" class="dashboard-panel">
+            <!-- Live Analytic Aggregation Summary Metrics -->
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Total Waste Logged</p>
+                    <p class="text-3xl font-bold text-slate-800 mt-2" id="statTotalItems">0 items</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Diverted from Landfills</p>
+                    <p class="text-3xl font-bold text-emerald-600 mt-2"><span id="statTotalWeight">0.0</span> kg</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Eco-Points Earned</p>
+                    <p class="text-3xl font-bold text-amber-500 mt-2"><span id="statPoints">0</span> pts</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm">
+                    <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">CO₂ Avoided</p>
+                    <p class="text-3xl font-bold text-blue-600 mt-2"><span id="statCO2">0.0</span> kg</p>
+                </div>
+            </section>
 
-        <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl p-5 shadow-sm">
-                <p class="text-xs uppercase tracking-[0.2em] text-emerald-100">Impact</p>
-                <h3 class="text-2xl font-bold mt-3" id="impactTotal">0 kg</h3>
-                <p class="text-sm text-emerald-100 mt-2">Estimated material diverted from landfill</p>
-            </div>
-            <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-5 shadow-sm">
-                <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Pickup ETA</p>
-                <h3 class="text-2xl font-bold mt-3" id="nextEta">Not scheduled</h3>
-                <p class="text-sm text-blue-100 mt-2">Your upcoming collection window</p>
-            </div>
-            <div class="bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-xl p-5 shadow-sm">
-                <p class="text-xs uppercase tracking-[0.2em] text-amber-100">Rewards</p>
-                <h3 class="text-2xl font-bold mt-3" id="rewardProgress">0%</h3>
-                <p class="text-sm text-amber-100 mt-2">Progress toward your next reward tier</p>
-            </div>
-        </section>
+            <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-xl p-5 shadow-sm">
+                    <p class="text-xs uppercase tracking-[0.2em] text-emerald-100">Impact</p>
+                    <h3 class="text-2xl font-bold mt-3" id="impactTotal">0 kg</h3>
+                    <p class="text-sm text-emerald-100 mt-2">Estimated material diverted from landfill</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl p-5 shadow-sm">
+                    <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Pickup ETA</p>
+                    <h3 class="text-2xl font-bold mt-3" id="nextEta">Not scheduled</h3>
+                    <p class="text-sm text-blue-100 mt-2">Your upcoming collection window</p>
+                </div>
+                <div class="bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-xl p-5 shadow-sm">
+                    <p class="text-xs uppercase tracking-[0.2em] text-amber-100">Rewards</p>
+                    <h3 class="text-2xl font-bold mt-3" id="rewardProgress">0%</h3>
+                    <p class="text-sm text-amber-100 mt-2">Progress toward your next reward tier</p>
+                </div>
+            </section>
+        </div>
 
-        <!-- Active User Data Tracking Grid -->
-        <section class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+        <section id="submissions-panel" class="dashboard-panel hidden bg-white rounded-xl border border-slate-100 p-6 shadow-sm mt-8">
             <h3 class="font-bold text-slate-800 mb-4 text-lg">Your Submissions</h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -101,7 +121,7 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-8">
+        <section id="impact-panel" class="dashboard-panel hidden grid grid-cols-1 xl:grid-cols-1 gap-6 mt-8">
             <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
                 <h3 class="font-bold text-slate-800 mb-4 text-lg">Eco Impact Overview</h3>
                 <div class="space-y-4">
@@ -117,6 +137,9 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <section id="rewards-panel" class="dashboard-panel hidden mt-8">
             <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
                 <h3 class="font-bold text-slate-800 mb-4 text-lg">Reward Marketplace</h3>
                 <div class="space-y-3">
@@ -145,68 +168,79 @@
             </div>
         </section>
 
-        <section class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm mt-8">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <h3 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-trophy mr-2 text-amber-500"></i>Community Leaderboard</h3>
-                    <p class="text-xs text-slate-500 mt-1">Top eco-champions ranked by total points.</p>
+        <section id="leaderboard-panel" class="dashboard-panel hidden mt-8">
+            <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-trophy mr-2 text-amber-500"></i>Community Leaderboard</h3>
+                        <p class="text-xs text-slate-500 mt-1">Top eco-champions ranked by total points.</p>
+                    </div>
+                    <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full">Top 10</span>
                 </div>
-                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full">Top 10</span>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-slate-100 text-slate-400 text-sm">
-                            <th class="py-3 px-4">Rank</th>
-                            <th class="py-3 px-4">User</th>
-                            <th class="py-3 px-4">Weight Recycled</th>
-                            <th class="py-3 px-4">Eco-Points</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboardBody" class="text-slate-600 text-sm divide-y divide-slate-50">
-                        <tr><td colspan="4" class="py-6 text-center text-slate-400">Loading leaderboard...</td></tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-sm">
+                                <th class="py-3 px-4">Rank</th>
+                                <th class="py-3 px-4">User</th>
+                                <th class="py-3 px-4">Weight Recycled</th>
+                                <th class="py-3 px-4">Eco-Points</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody" class="text-slate-600 text-sm divide-y divide-slate-50">
+                            <tr><td colspan="4" class="py-6 text-center text-slate-400">Loading leaderboard...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
-        <!-- Landfill Report Panel -->
-        <section class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm mt-8">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h3 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-triangle-exclamation mr-2 text-orange-500"></i>Report Illegal Landfills</h3>
-                    <p class="text-xs text-slate-500 mt-1">Help us identify and clean up improper waste dumps</p>
+        <section id="landfill-panel" class="dashboard-panel hidden mt-8">
+            <div class="bg-white rounded-xl border border-slate-100 p-6 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg"><i class="fa-solid fa-triangle-exclamation mr-2 text-orange-500"></i>Report Illegal Landfills</h3>
+                        <p class="text-xs text-slate-500 mt-1">Help us identify and clean up improper waste dumps</p>
+                    </div>
+                    <button onclick="document.getElementById('landfillModal').classList.remove('hidden')" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition shadow-sm">
+                        <i class="fa-solid fa-map-pin mr-2"></i>Report Landfill
+                    </button>
                 </div>
-                <button onclick="document.getElementById('landfillModal').classList.remove('hidden')" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition shadow-sm">
-                    <i class="fa-solid fa-map-pin mr-2"></i>Report Landfill
-                </button>
-            </div>
-            <div id="landfillReportsTable" class="text-slate-600 text-sm">
-                <p class="text-center py-8 text-slate-400">No reports submitted yet. Help protect the environment!</p>
+                <div id="landfillReportsTable" class="text-slate-600 text-sm">
+                    <p class="text-center py-8 text-slate-400">No reports submitted yet. Help protect the environment!</p>
+                </div>
             </div>
         </section>
     </main>
 
     <!-- Modal for Item Submission -->
     <div id="reportModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-xl max-w-md w-full shadow-lg">
+        <div class="bg-white p-6 rounded-xl max-w-2xl w-full shadow-lg">
             <h3 class="text-lg font-bold text-slate-800 mb-4">Log New E-Waste Item</h3>
             <form id="addItemForm" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Item Type</label>
-                    <select id="itemType" class="w-full border border-slate-200 p-2 rounded-lg text-sm bg-white focus:outline-none focus:border-emerald-500">
-                        <option value="Smartphone / Tablet">Smartphone / Tablet</option>
-                        <option value="Laptop / Desktop">Laptop / Desktop</option>
-                        <option value="Lithium-ion Batteries">Lithium-ion Batteries</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Item Type</label>
+                        <select id="itemType" class="w-full border border-slate-200 p-2 rounded-lg text-sm bg-white focus:outline-none focus:border-emerald-500">
+                            <option value="Smartphone / Tablet">Smartphone / Tablet</option>
+                            <option value="Laptop / Desktop">Laptop / Desktop</option>
+                            <option value="Lithium-ion Batteries">Lithium-ion Batteries</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Weight (kg)</label>
+                        <input type="number" id="itemWeight" step="0.1" required class="w-full border border-slate-200 p-2 rounded-lg text-sm focus:outline-none focus:border-emerald-500">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Weight (kg)</label>
-                    <input type="number" id="itemWeight" step="0.1" required class="w-full border border-slate-200 p-2 rounded-lg text-sm focus:outline-none focus:border-emerald-500">
-                </div>
+
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Pickup Address</label>
-                    <textarea id="pickupAddress" required rows="2" class="w-full border border-slate-200 p-2 rounded-lg text-sm focus:outline-none focus:border-emerald-500" placeholder="Hostel wing, room number..."></textarea>
+                    <div class="flex gap-2 mb-2">
+                        <input id="pickupSearch" type="text" placeholder="Search address or area" class="flex-1 border border-slate-200 p-2 rounded-lg text-sm focus:outline-none focus:border-emerald-500">
+                        <button type="button" id="pickupSearchBtn" class="px-3 py-2 text-sm bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200">Search</button>
+                    </div>
+                    <div id="recycleMap" class="w-full h-52 rounded-lg border border-slate-200 bg-slate-50 mb-2"></div>
+                    <textarea id="pickupAddress" required rows="2" class="w-full border border-slate-200 p-2 rounded-lg text-sm focus:outline-none focus:border-emerald-500" placeholder="Selected pickup location will appear here..."></textarea>
                 </div>
                 <div class="flex justify-end space-x-2 pt-2">
                     <button type="button" onclick="document.getElementById('reportModal').classList.add('hidden')" class="px-4 py-2 text-sm text-slate-500 hover:bg-slate-100 rounded-lg">Cancel</button>
@@ -275,92 +309,97 @@
     <!-- Real-Time Firebase Cloud Operations Script -->
     <script type="module">
         import { auth, db, collection, addDoc, onSnapshot, query, where } from "./js/firebase-config.js";
-        import { signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
         const wasteCollectionRef = collection(db, "waste_requests");
+        let dashboardAuthListenerAttached = false;
 
         // Cloud listener: Watches the current user's submissions for the dashboard and all users for the leaderboard
         function syncUserDashboard() {
-            const currentUser = auth.currentUser;
-            if (!currentUser) {
-                window.location.href = "index.html";
-                return;
-            }
+            if (dashboardAuthListenerAttached) return;
+            dashboardAuthListenerAttached = true;
 
-            const userWasteQuery = query(wasteCollectionRef, where("userId", "==", currentUser.uid));
-
-            onSnapshot(userWasteQuery, (snapshot) => {
-                const body = document.getElementById('itemsTableBody');
-                body.innerHTML = '';
-
-                if (snapshot.empty) {
-                    body.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400">No recycled items tracked yet.</td></tr>`;
-                    updateStats(0, 0);
+            onAuthStateChanged(auth, (currentUser) => {
+                if (!currentUser) {
+                    window.location.href = "index.html";
                     return;
                 }
 
-                let totalCount = 0;
-                let totalWeight = 0;
+                const userWasteQuery = query(wasteCollectionRef, where("userId", "==", currentUser.uid));
 
-                snapshot.forEach(documentSnapshot => {
-                    const item = documentSnapshot.data();
-                    totalCount++;
-                    totalWeight += parseFloat(item.weight || 0);
+                onSnapshot(userWasteQuery, (snapshot) => {
+                    const body = document.getElementById('itemsTableBody');
+                    body.innerHTML = '';
 
-                    const status = item.status || "PENDING";
-                    let statusBadgeColor = "bg-amber-100 text-amber-800";
-                    if (status === "ASSIGNED") statusBadgeColor = "bg-blue-100 text-blue-800";
-                    if (status === "IN_TRANSIT") statusBadgeColor = "bg-violet-100 text-violet-800";
-                    if (status === "COLLECTED" || status === "RECYCLED") statusBadgeColor = "bg-emerald-100 text-emerald-800";
-
-                    const estimatedTime = item.estimatedPickupTime ? new Date(item.estimatedPickupTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'To be assigned';
-                    if (item.estimatedPickupTime && (!document.getElementById('nextEta').textContent || document.getElementById('nextEta').textContent === 'Not scheduled')) {
-                        document.getElementById('nextEta').innerText = estimatedTime;
+                    if (snapshot.empty) {
+                        body.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-slate-400">No recycled items tracked yet.</td></tr>`;
+                        updateStats(0, 0);
+                        return;
                     }
 
-                    body.innerHTML += `
-                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-all">
-                            <td class="py-3 px-4 font-medium text-slate-800">
-                                <div>${item.type || "N/A"}</div>
-                                <div class="text-[11px] text-slate-400 mt-1">${item.address || "No address given"}</div>
-                            </td>
-                            <td class="py-3 px-4 text-slate-600">${item.weight || 0} kg</td>
-                            <td class="py-3 px-4">
-                                <div><span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusBadgeColor}">${status}</span></div>
-                                <div class="text-[11px] text-slate-400 mt-1">ETA: ${estimatedTime}</div>
-                            </td>
-                            <td class="py-3 px-4 text-slate-400">${item.date || "Just now"}</td>
-                        </tr>`;
+                    let totalCount = 0;
+                    let totalWeight = 0;
+
+                    snapshot.forEach(documentSnapshot => {
+                        const item = documentSnapshot.data();
+                        totalCount++;
+                        totalWeight += parseFloat(item.weight || 0);
+
+                        const status = item.status || "PENDING";
+                        let statusBadgeColor = "bg-amber-100 text-amber-800";
+                        if (status === "ASSIGNED") statusBadgeColor = "bg-blue-100 text-blue-800";
+                        if (status === "IN_TRANSIT") statusBadgeColor = "bg-violet-100 text-violet-800";
+                        if (status === "COLLECTED" || status === "RECYCLED") statusBadgeColor = "bg-emerald-100 text-emerald-800";
+
+                        const estimatedTime = item.estimatedPickupTime ? new Date(item.estimatedPickupTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : 'To be assigned';
+                        if (item.estimatedPickupTime && (!document.getElementById('nextEta').textContent || document.getElementById('nextEta').textContent === 'Not scheduled')) {
+                            document.getElementById('nextEta').innerText = estimatedTime;
+                        }
+
+                        body.innerHTML += `
+                            <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-all">
+                                <td class="py-3 px-4 font-medium text-slate-800">
+                                    <div>${item.type || "N/A"}</div>
+                                    <div class="text-[11px] text-slate-400 mt-1">${item.address || "No address given"}</div>
+                                </td>
+                                <td class="py-3 px-4 text-slate-600">${item.weight || 0} kg</td>
+                                <td class="py-3 px-4">
+                                    <div><span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusBadgeColor}">${status}</span></div>
+                                    <div class="text-[11px] text-slate-400 mt-1">ETA: ${estimatedTime}</div>
+                                </td>
+                                <td class="py-3 px-4 text-slate-400">${item.date || "Just now"}</td>
+                            </tr>`;
+                    });
+
+                    updateStats(totalCount, totalWeight);
                 });
 
-                updateStats(totalCount, totalWeight);
-            });
+                onSnapshot(wasteCollectionRef, (snapshot) => {
+                    const leaderboardMap = new Map();
 
-            onSnapshot(wasteCollectionRef, (snapshot) => {
-                const leaderboardMap = new Map();
+                    snapshot.forEach((documentSnapshot) => {
+                        const item = documentSnapshot.data();
+                        const userId = item.userId || "unknown-user";
+                        const userEmail = item.userEmail || "Eco Hero";
 
-                snapshot.forEach((documentSnapshot) => {
-                    const item = documentSnapshot.data();
-                    const userId = item.userId || "unknown-user";
-                    const userEmail = item.userEmail || "Eco Hero";
+                        if (!leaderboardMap.has(userId)) {
+                            leaderboardMap.set(userId, {
+                                userId,
+                                userEmail,
+                                totalWeight: 0,
+                                points: 0
+                            });
+                        }
 
-                    if (!leaderboardMap.has(userId)) {
-                        leaderboardMap.set(userId, {
-                            userId,
-                            userEmail,
-                            totalWeight: 0,
-                            points: 0
-                        });
-                    }
+                        const entry = leaderboardMap.get(userId);
+                        entry.totalWeight += Number(item.weight || 0);
+                        entry.points = Math.floor(entry.totalWeight * 10);
+                    });
 
-                    const entry = leaderboardMap.get(userId);
-                    entry.totalWeight += Number(item.weight || 0);
-                    entry.points = Math.floor(entry.totalWeight * 10);
+                    const leaderboardEntries = Array.from(leaderboardMap.values())
+                        .sort((a, b) => b.points - a.points || b.totalWeight - a.totalWeight);
+
+                    renderLeaderboard(leaderboardEntries);
                 });
-
-                const leaderboardEntries = Array.from(leaderboardMap.values())
-                    .sort((a, b) => b.points - a.points || b.totalWeight - a.totalWeight);
-
-                renderLeaderboard(leaderboardEntries);
             });
         }
 
@@ -419,6 +458,81 @@
             }).join('');
         }
 
+        function openRecycleModal() {
+            const modal = document.getElementById('reportModal');
+            if (modal) modal.classList.remove('hidden');
+            initRecycleMap();
+        }
+        window.openRecycleModal = openRecycleModal;
+
+        let recycleMap;
+        let recycleMarker;
+
+        function initRecycleMap() {
+            const mapContainer = document.getElementById('recycleMap');
+            if (!mapContainer) return;
+            if (recycleMap) return;
+
+            recycleMap = L.map(mapContainer, { zoomControl: true }).setView([28.6139, 77.2090], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(recycleMap);
+
+            recycleMap.on('click', (event) => {
+                setRecycleMarker(event.latlng);
+            });
+
+            document.getElementById('pickupSearchBtn').addEventListener('click', async () => {
+                const query = document.getElementById('pickupSearch').value.trim();
+                if (!query) {
+                    alert('Please enter an address or area to search.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+                    const results = await response.json();
+                    if (!results.length) {
+                        alert('Address not found. Please click a location on the map instead.');
+                        return;
+                    }
+
+                    const place = results[0];
+                    const latLng = { lat: parseFloat(place.lat), lng: parseFloat(place.lon) };
+                    recycleMap.setView([latLng.lat, latLng.lng], 15);
+                    setRecycleMarker(latLng);
+                    document.getElementById('pickupAddress').value = place.display_name;
+                } catch (error) {
+                    console.error('Pickup address search failed:', error);
+                    alert('Unable to search this address right now. Please click the map manually.');
+                }
+            });
+
+            document.getElementById('pickupSearch').addEventListener('keydown', async (event) => {
+                if (event.key !== 'Enter') return;
+                event.preventDefault();
+                document.getElementById('pickupSearchBtn').click();
+            });
+        }
+
+        function setRecycleMarker(latLng) {
+            if (!recycleMap) return;
+
+            if (recycleMarker) {
+                recycleMap.removeLayer(recycleMarker);
+            }
+
+            recycleMarker = L.marker([latLng.lat, latLng.lng], {
+                draggable: true,
+                riseOnHover: true
+            }).addTo(recycleMap);
+
+            recycleMarker.bindPopup('Pickup location');
+            recycleMarker.openPopup();
+            document.getElementById('pickupAddress').value = `${latLng.lat.toFixed(5)}, ${latLng.lng.toFixed(5)}`;
+        }
+
         // Handle structural new item creation and write straight to firestore
         document.getElementById('addItemForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -426,18 +540,26 @@
             const formattedDate = String(today.getDate()).padStart(2, '0') + '-' + String(today.getMonth()+1).padStart(2, '0') + '-' + today.getFullYear();
             const currentUser = auth.currentUser;
 
+            if (!recycleMarker) {
+                alert('Please choose the pickup location by clicking the map or searching for an address.');
+                return;
+            }
+
             if (!currentUser) {
                 window.location.href = "index.html";
                 return;
             }
             
             try {
+                const latLng = recycleMarker.getLatLng();
                 await addDoc(wasteCollectionRef, {
                     userId: currentUser.uid,
                     userEmail: currentUser.email,
                     type: document.getElementById('itemType').value,
                     weight: parseFloat(document.getElementById('itemWeight').value),
                     address: document.getElementById('pickupAddress').value,
+                    latitude: latLng.lat,
+                    longitude: latLng.lng,
                     date: formattedDate,
                     status: "PENDING",
                     estimatedPickupTime: "",
@@ -446,19 +568,29 @@
                 
                 document.getElementById('reportModal').classList.add('hidden');
                 document.getElementById('addItemForm').reset();
+                document.getElementById('pickupSearch').value = '';
+                recycleMarker = null;
+                recycleMap = null;
+                setTimeout(() => {
+                    document.getElementById('submissions-panel').classList.remove('hidden');
+                    document.querySelectorAll('.dashboard-panel').forEach(panel => panel.classList.add('hidden'));
+                    document.getElementById('submissions-panel').classList.remove('hidden');
+                }, 100);
             } catch (err) {
                 console.error("Database write rejection: ", err);
             }
         });
 
         // Safe account logging termination action routine
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                window.location.href = "index.html";
-            } catch (err) {
-                alert("Logout calculation failure: " + err.message);
-            }
+        document.querySelectorAll('.logout-btn').forEach((button) => {
+            button.addEventListener('click', async () => {
+                try {
+                    await signOut(auth);
+                    window.location.href = "index.html";
+                } catch (err) {
+                    alert("Logout calculation failure: " + err.message);
+                }
+            });
         });
 
         // Landfill Report Map and Form Handler
@@ -594,6 +726,33 @@
                 console.error("Landfill report error: ", err);
                 alert("Error submitting report: " + err.message);
             }
+        });
+
+        function showDashboardPanel(target) {
+            document.querySelectorAll('.dashboard-nav').forEach((navBtn) => {
+                navBtn.classList.remove('bg-slate-800', 'text-emerald-400');
+                navBtn.classList.add('text-slate-300');
+            });
+
+            const activeBtn = document.querySelector(`.dashboard-nav[data-target="${target}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-slate-800', 'text-emerald-400');
+                activeBtn.classList.remove('text-slate-300');
+            }
+
+            document.querySelectorAll('.dashboard-panel').forEach((panel) => {
+                panel.classList.add('hidden');
+            });
+
+            const panel = document.getElementById(target);
+            if (panel) panel.classList.remove('hidden');
+        }
+        window.showDashboardPanel = showDashboardPanel;
+
+        document.querySelectorAll('.dashboard-nav').forEach((button) => {
+            button.addEventListener('click', () => {
+                showDashboardPanel(button.dataset.target);
+            });
         });
 
         window.onload = syncUserDashboard;
